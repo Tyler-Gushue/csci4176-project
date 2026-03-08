@@ -4,6 +4,6 @@ export function ProfileScreen() {
   const navigation = useNavigation();
 
   return (
-    <h2>Profile</h2>
+    <h2>Some Profile Text</h2>
   );
 }

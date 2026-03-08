@@ -4,6 +4,6 @@ export function HomeScreen() {
   const navigation = useNavigation();
 
   return (
-    <h2>Home</h2>
+    <h2>Some Home Text</h2>
   );
 };
