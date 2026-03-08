@@ -1,45 +1,117 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
+import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "./firebaseConfig";
 
 export default function Signup() {
 
-    return (
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassowrd, setConfirmPassword] = useState("");
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{12,}$/;
 
-        <View style={styles.container}>
-            <View style={styles.loginContainer}>
-                <Text style={styles.loginHeader}>Sign Up</Text>
-                <TextInput
-                  style={styles.loginInput}
-                  placeholder="Username"
-                  placeholderTextColor='#67beff'
-                />
-                <TextInput
-                  style={styles.loginInput}
-                  placeholder="Email"
-                  placeholderTextColor='#67beff'
-                />
-                <TextInput 
-                  style={styles.loginInput}
-                  placeholder="Password"
-                  keyboardType="password"
-                  placeholderTextColor='#67beff'
-                />
-                <TextInput 
-                  style={styles.loginInput}
-                  placeholder="Confirm Password"
-                  keyboardType="password"
-                  placeholderTextColor='#67beff'
-                />
-                <TouchableOpacity
-                  style={styles.loginButton}
-                  onPress={() => console.log('Pressed!')}
-                >
-                    <Text style={styles.loginText}>Sign Up</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+  const validateForm = () => {
 
-    )
+    if (email == "" || username == "" || password == "" || confirmPassowrd == "") {
+
+      console.log("error");
+      return;
+
+    }
+
+    if (!passwordRegex.test(password)) {
+
+      console.log("error");
+      return;
+
+    }
+
+    if (password != confirmPassowrd) {
+
+      console.log("error");
+      return;
+
+    }
+
+    registerUser();
+    
+
+  }
+
+  const registerUser = async () => {
+
+    try {
+
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+
+      await setDoc(doc(db, "users", user.uid), {
+        email: email,
+        username: username,
+        createdAt: new Date(),
+      });
+
+      console.log("User registered and added to Firestore with ID:", user.uid);
+    } 
+
+    catch (error) {
+
+      console.error("Error during registration:", error.code, error.message);
+
+    }
+
+  }
+
+  const signUp = async ()
+
+  return (
+
+      <View style={styles.container}>
+          <View style={styles.loginContainer}>
+              <Text style={styles.loginHeader}>Sign Up</Text>
+              <TextInput
+                style={styles.loginInput}
+                placeholder="Email"
+                placeholderTextColor='#67beff'
+                value={email}
+                onChange={setEmail}
+              />
+              <TextInput
+                style={styles.loginInput}
+                placeholder="Username"
+                placeholderTextColor='#67beff'
+                value={username}
+                onChange={setUsername}
+              />
+              <TextInput 
+                style={styles.loginInput}
+                placeholder="Password"
+                secureTextEntry={true}
+                placeholderTextColor='#67beff'
+                value={password}
+                onChange={setPassword}
+              />
+              <TextInput 
+                style={styles.loginInput}
+                placeholder="Confirm Password"
+                secureTextEntry={true}
+                placeholderTextColor='#67beff'
+                value={confirmPassowrd}
+                onChange={setConfirmPassword}
+              />
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={validateForm}
+              >
+                  <Text style={styles.loginText}>Sign Up</Text>
+              </TouchableOpacity>
+          </View>
+      </View>
+
+  )
 
 }
 
