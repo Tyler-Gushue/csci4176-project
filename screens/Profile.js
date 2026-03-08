@@ -1,9 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 
-export function HomeScreen() {
+export function ProfileScreen() {
   const navigation = useNavigation();
 
   return (
-    <h2>Home</h2>
+    <h2>Profile</h2>
   );
-};
+}
