@@ -28,8 +28,6 @@ function Navigation() {
 export default function App() {
   return (
     <View style={{width: '100%'}}>
-
-
       <Navigation />
     </View>
   );
