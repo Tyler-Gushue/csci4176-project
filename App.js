@@ -2,42 +2,33 @@ import { View, TextInput, Button, FlatList, Text, StyleSheet } from 'react-nativ
 
 import * as React from 'react';
 
+
 import { HomeScreen } from './screens/Home.js'
 import { ProfileScreen } from './screens/Profile.js';
+import { MapScreen } from './screens/Map.js';
 
-import { createStaticNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Navigation } from './Navigation.js'
 
-const RootStack = createNativeStackNavigator({
-  screens: {
-    Home: {
-      screen: HomeScreen
-    },
-    Profile: {
-      screen: ProfileScreen
-    }
-  }
-});
-
-const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
-  return (
-    <div>
 
-      <div style={ styles.navBar }>
-        <Button>Home</Button>
-      </div>
 
-      <Navigation />
-    </div>
-  );
+  return <Navigation />;
+  // return (
+  //   <>
+  //     <View style={{width: '100%'}}>
+  //       {/* <NavBar />*/}
+  //       <Navigation />
+  //     </View>
+  //   </>
+  // );
 }
 
 
 const styles = StyleSheet.create({
   navBar: {
+    display: "flex",
     flexDirection: "row",
-  }
-
+  },
+  
 });
