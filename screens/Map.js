@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet, Button} from "react-native";
+import {View, Text, StyleSheet, Button, TouchableOpacity} from "react-native";
 import MapView, {Marker} from "react-native-maps";
 import * as Location from "expo-location";
 import { fetchEvents } from "../DbUtil";
@@ -41,8 +41,6 @@ export function MapScreen(){
 
     return(
         <View style={styles.container}>
-            <Text style={styles.title}>Nearby Events</Text>
-
             <MapView style={styles.map} region={region}>
                 {userLocation && (
                     <Marker
@@ -71,14 +69,19 @@ export function MapScreen(){
                 {selectedEvent && (
                     <View style={styles.eventCard}>
                         <Text style={styles.eventTitle}>{selectedEvent.title}</Text>
-                        <Text>{selectedEvent.description}</Text>
-                        <Text>Game: {selectedEvent.game}</Text>
-                        <Text>Date: {selectedEvent.date}</Text>
-                        <Text>Time: {selectedEvent.time}</Text>
-                        <Text>Location: {selectedEvent.locationName}</Text>
-                        <Text>Host: {selectedEvent.host}</Text>
-                        <Text>Skill Level: {selectedEvent.skillLevel}</Text>
-                        <Button title="Close" onPress={() => setSelectedEvent(null)}/>
+                        <Text style={styles.eventText}>{selectedEvent.description}</Text>
+                        <Text style={styles.eventText}>Game: {selectedEvent.game}</Text>
+                        <Text style={styles.eventText}>Date: {selectedEvent.date}</Text>
+                        <Text style={styles.eventText}>Time: {selectedEvent.time}</Text>
+                        <Text style={styles.eventText}>Location: {selectedEvent.locationName}</Text>
+                        <Text style={styles.eventText}>Host: {selectedEvent.host}</Text>
+                        <Text style={styles.eventText}>Skill Level: {selectedEvent.skillLevel}</Text>
+                        <TouchableOpacity
+                            style={ styles.button }
+                            onPress={() => setSelectedEvent(null)}
+                        >
+                            <Text style={ styles.buttonText }>Close</Text>
+                        </TouchableOpacity>
                     </View>
                 )}
         </View>
@@ -88,6 +91,7 @@ export function MapScreen(){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#b4dafb',
     },
 
     title: {
@@ -102,14 +106,34 @@ const styles = StyleSheet.create({
 
     eventCard: {
         padding: 12,
-        backgroundColor: "white",
         margin: 10,
         borderRadius: 10,
+        backgroundColor: '#fff',
     },
 
     eventTitle: {
         fontSize: 18,
         fontWeight: "bold",
         marginBottom: 4,
+        color: '#67beff'
+    },
+
+    eventText: {
+        color: '#67beff'
+    },
+
+    button: {
+        backgroundColor: '#67beff',
+        alignItems: 'center',
+        width: '100%',
+        borderWidth: 1,
+        borderColor: '#67beff',
+        borderRadius: 10,
+        marginTop: 15,
+        padding: 5,
+    },
+    buttonText: {
+        fontSize: 15,
+        color: '#cfe2f3'
     },
 });

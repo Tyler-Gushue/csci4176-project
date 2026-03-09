@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   cardView: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#cfe2f3',
+    backgroundColor: '#fff',
     padding: 20,
     margin: 10,
     marginTop: '12%',
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     margin: 20,
     padding: 5,
   },
-    buttonText: {
+  buttonText: {
     fontSize: 15,
     color: '#cfe2f3'
   },
