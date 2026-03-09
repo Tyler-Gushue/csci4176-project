@@ -2,8 +2,10 @@ import React, {useEffect, useState} from "react";
 import {View, Text, StyleSheet, Button} from "react-native";
 import MapView, {Marker} from "react-native-maps";
 import * as Location from "expo-location";
+import { useNavigation } from "@react-navigation/native";
 
 export function MapScreen(){
+    const navigation = useNavigation();
     const [region, setRegion] = useState({
         //somewhere Downtown Halifax
         latitude: 44.6488,
@@ -57,6 +59,7 @@ export function MapScreen(){
     return(
         <View style={styles.container}>
             <Text style={styles.title}>Nearby Events</Text>
+            <Button title="Back" onPress={() => navigation.goBack()}/>
 
             <MapView style={styles.map} region={region}>
                 {userLocation && (
@@ -87,7 +90,7 @@ export function MapScreen(){
                     <View style={styles.eventCard}>
                         <Text style={styles.eventTitle}>{selectedEvent.title}</Text>
                         <Text>{selectedEvent.description}</Text>
-                        <Button title="close" onPress={() => setSelectedEvent(null)}/>
+                        <Button title="Close" onPress={() => setSelectedEvent(null)}/>
                     </View>
                 )}
         </View>
