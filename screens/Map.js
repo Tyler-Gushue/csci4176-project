@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet, Button, TouchableOpacity} from "react-native";
+import {View, Text, StyleSheet, Button, TouchableOpacity, Platform} from "react-native";
 import MapView, {Marker} from "react-native-maps";
 import * as Location from "expo-location";
 import { fetchEvents } from "../DbUtil";
+
 
 export function MapScreen(){
     const [region, setRegion] = useState({
@@ -13,7 +14,11 @@ export function MapScreen(){
         longitudeDelta: 0.05,
     });
 
-import { View, StyleSheet, Text, Button, Platform } from 'react-native';
+
+    const [userLocation, setUserLocation] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [events, setEvents] = useState([]);
+
 
     useEffect(() => {
         async function loadMapData() {

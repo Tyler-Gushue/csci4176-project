@@ -26,7 +26,7 @@ export function PostScreen() {
 
   const validateForm = () => {
     const checkField = (ref) => {
-      if (ref.current && ref.current.value.length == 0) {
+      if (ref.current && ref.current.value != null &&  ref.current.value.length == 0) {
         ref.current.style.borderColor = '#ff0000';
         ref.current.style.color = '#ff0000';
         return false;
@@ -110,8 +110,8 @@ export function PostScreen() {
           />
 
           <Dropdown
-            style={styles.postInput} 
-            
+            style={styles.postInput}
+
             placeholderStyle={{ color: '#67beff', fontSize: 15 }}
             selectedTextStyle={{ color: '#67beff', fontSize: 15 }}
 
@@ -119,7 +119,7 @@ export function PostScreen() {
               { label: 'Online', value: 'Online' },
               { label: 'In-person', value: 'In-person' }
             ]}
-            
+
             labelField="label"
             valueField="value"
             placeholder="Select Location"

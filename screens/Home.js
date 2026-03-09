@@ -3,14 +3,12 @@ import { View, Text, StyleSheet, Button } from "react-native";
 import React, {useState, useEffect} from "react"
 import { fetchPosts } from "../DbUtil";
 
-import React, { useState, useEffect } from 'react';
 
 import { ScrollView, FlatList, Platform } from 'react-native';
 
 
-import { fetchPosts } from '../DbUtil.js'
 
-function PostCard(props) {
+function PostCard({ post }) {
   return (
     <View style={styles.cardView}>
       <Text style={styles.title}>{ post.title }</Text>

@@ -7,6 +7,7 @@ import { auth } from './screens/firebaseConfig.js';
 
 const DB_POSTS_NAME = "posts"
 const DB_USERS_NAME = "users"
+const DB_EVENTS_NAME = "events";
 
 export async function fetchPosts() {
   const q = query(collection(db, DB_POSTS_NAME));
