@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, Button} from "react-native";
 import MapView, {Marker} from "react-native-maps";
 import * as Location from "expo-location";
 
@@ -13,6 +13,7 @@ export function MapScreen(){
     });
 
     const [userLocation, setUserLocation] = useState(null);
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const sampleEvents = [
         {
             id: "1",
@@ -77,9 +78,18 @@ export function MapScreen(){
                             }}
                             title={event.title}
                             description={event.description}
+                            onPress={() => setSelectedEvent(event)}
                         />
                 ))}
             </MapView>
+
+                {selectedEvent && (
+                    <View style={styles.eventCard}>
+                        <Text style={styles.eventTitle}>{selectedEvent.title}</Text>
+                        <Text>{selectedEvent.description}</Text>
+                        <Button title="close" onPress={() => setSelectedEvent(null)}/>
+                    </View>
+                )}
         </View>
     );
 }
@@ -97,5 +107,18 @@ const styles = StyleSheet.create({
 
     map: {
         flex: 1,
+    },
+
+    eventCard: {
+        padding: 12,
+        backgroundColor: "white",
+        margin: 10,
+        borderRadius: 10,
+    },
+
+    eventTitle: {
+        fontSize: 18,
+        fontWeight: "bold",
+        marginBottom: 4,
     },
 });
