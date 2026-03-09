@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 
 
-import { View, StyleSheet, Text, Button } from 'react-native';
+import { View, StyleSheet, Text, Button, Platform } from 'react-native';
 
 
 export function MapScreen() {
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     margin: 10,
-    marginTop: '15%',
+    marginTop: (Platform.OS != 'web') ? '15%' : '',
     borderRadius: 10
   },
   title: {

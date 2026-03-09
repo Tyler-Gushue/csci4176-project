@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, {useState, useRef} from 'react';
-import { View, StyleSheet, Text, Button, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Button, TextInput, TouchableOpacity, Platform } from 'react-native';
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
 
@@ -73,8 +73,8 @@ export function PostScreen() {
           />
 
           <Dropdown
-            style={styles.postInput} 
-            
+            style={styles.postInput}
+
             placeholderStyle={{ color: '#67beff', fontSize: 15 }}
             selectedTextStyle={{ color: '#67beff', fontSize: 15 }}
 
@@ -82,7 +82,7 @@ export function PostScreen() {
               { label: 'Competitive', value: 'Competitive' },
               { label: 'Casual', value: 'Casual' }
             ]}
-            
+
             labelField="label"
             valueField="value"
             placeholder="Select Type"
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#cfe2f3',
     padding: 20,
     margin: 10,
-    marginTop: '12%',
+    marginTop: (Platform.OS != 'web') ? '15%' : '',
     borderRadius: 10,
   },
   title: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
     borderColor: '#67beff',
-    color: '#67beff', 
+    color: '#67beff',
     fontSize: 15,
     padding: 10,
     marginBottom: 10
