@@ -1,12 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
-
 import React, {useState, useRef} from 'react';
-
-
-
 import { View, StyleSheet, Text, Button, TextInput, TouchableOpacity } from 'react-native';
-
 import { addPost } from '../DbUtil.js';
+import { Dropdown } from 'react-native-element-dropdown';
 
 
 export function PostScreen() {
@@ -14,6 +10,7 @@ export function PostScreen() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [type, setType] = useState("");
 
 
   const titleRef = useRef(null);
@@ -52,57 +49,91 @@ export function PostScreen() {
   }
 
   return (
-    <View style={ styles.cardView }>
-      <Text style={styles.title}>Make a Post</Text>
-      <View style={ {display: 'flex', flexDirection: 'column', gap: 20} }>
+    <View style={ styles.container }>
+      <View style={ styles.cardView }>
+        <Text style={styles.title}>Make a Post</Text>
+        <View style={styles.form}>
 
 
-        <TextInput
+          <TextInput
 
-          style={styles.postInput}
-          placeholder="Title"
-          ref={ titleRef }
-          value={ name }
-          onChange={(e) => setName(e.target.value)}
-        />
+            style={styles.postInput}
+            placeholder="Title"
+            ref={ titleRef }
+            value={ name }
+            onChangeText={setName}
+          />
 
-        <TextInput
-          style={styles.postInput}
-          placeholder="Description"
-          ref={ descriptionRef }
-          value={ description }
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <TextInput
+            style={styles.postInput}
+            placeholder="Description"
+            ref={ descriptionRef }
+            value={ description }
+            onChangeText={setDescription}
+          />
 
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => { validateForm(); }}
-        >
-          <Text style={styles.loginText}>Post</Text>
-        </TouchableOpacity>
+          <Dropdown
+            style={styles.postInput} 
+            
+            placeholderStyle={{ color: '#67beff', fontSize: 15 }}
+            selectedTextStyle={{ color: '#67beff', fontSize: 15 }}
 
+            data={[
+              { label: 'Competitive', value: 'Competitive' },
+              { label: 'Casual', value: 'Casual' }
+            ]}
+            
+            labelField="label"
+            valueField="value"
+            placeholder="Select Type"
+            value={type}
+            onChange={item => {
+              setType(item.value);
+            }}
+          />
+
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => { validateForm(); }}
+          >
+            <Text style={styles.loginText}>Post</Text>
+          </TouchableOpacity>
+
+        </View>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#b4dafb',
+  },
   cardView: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#cfe2f3',
     padding: 20,
-    backgroundColor: 'white',
     margin: 10,
-    marginTop: '15%',
-    borderRadius: 10
+    marginTop: '12%',
+    borderRadius: 10,
   },
   title: {
     fontSize: 20,
     fontWeight: '600',
     paddingBottom: 20,
   },
+  form: {
+    flex: 1,
+    width: '100%'
+  },
   postInput: {
     borderWidth: 1,
     width: '100%',
     borderRadius: 10,
+    borderColor: '#67beff',
+    color: '#67beff', 
     fontSize: 15,
     padding: 10,
     marginBottom: 10
@@ -120,5 +151,5 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 15,
     color: '#cfe2f3'
-  }
+  },
 });

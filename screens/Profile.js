@@ -156,11 +156,11 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#67beff',
     alignItems: 'center',
-    width: '100%',
+    width: '90%',
     borderWidth: 1,
     borderColor: '#67beff',
     borderRadius: 10,
-    marginTop: 15,
+    margin: 20,
     padding: 5,
   },
     buttonText: {
