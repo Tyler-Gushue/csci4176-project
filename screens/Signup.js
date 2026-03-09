@@ -57,6 +57,8 @@ export function Signup() {
 
       console.log("User registered and added to Firestore with ID:", user.uid);
 
+      await AsyncStorage.setItem('userID', user.uid);
+
       navigation.navigate("Home");
 
     }

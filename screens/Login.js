@@ -28,7 +28,7 @@ export function Login() {
           const userCredential = await signInWithEmailAndPassword(auth, email, password);
           const user = userCredential.user;
 
-          await AsyncStorage.setItem('userToken', user.uid);
+          await AsyncStorage.setItem('userID', user.uid);
           
           navigation.navigate('Home'); 
 
