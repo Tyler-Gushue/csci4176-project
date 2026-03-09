@@ -1,16 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Button } from "react-native";
 import React, {useState, useEffect} from "react"
-import { fetchPosts } from "../DbUtil";
-
-import React, { useState, useEffect } from 'react';
-
-import { ScrollView, FlatList, Platform } from 'react-native';
-
 
 import { fetchPosts } from '../DbUtil.js'
+import { ScrollView, FlatList, Platform } from 'react-native';
 
-function PostCard(props) {
 function PostCard({ post }) {
   return (
     <View style={styles.cardView}>
