@@ -5,6 +5,7 @@ import { doc, setDoc, addDoc, getDoc, getDocs, query, collection } from "firebas
 import { ref, push } from "firebase/database";
 
 const DB_POSTS_NAME = "posts"
+const DB_EVENTS_NAME = "events";
 
 export async function fetchPosts() {
   const q = query(collection(db, DB_POSTS_NAME));
@@ -17,6 +18,22 @@ export async function addPost(title, description) {
     title: title,
     description: description,
     // user: user.uid,
+    createdAt: new Date(),
+  });
+}
+
+export async function fetchEvents() {
+  const q = query(collection(db, DB_EVENTS_NAME));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+}
+
+export async function addEvent(event){
+  return addDoc(collection(db, DB_EVENTS_NAME), {
+    ...event,
     createdAt: new Date(),
   });
 }
