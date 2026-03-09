@@ -10,6 +10,7 @@ export function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const navigation = useNavigation();
 
@@ -17,8 +18,8 @@ export function Login() {
 
     if (email == "" || password == "") {
 
-      console.log('error');
-      return
+      setError("Email/Password is Required");
+      return;
 
     }
 
@@ -34,8 +35,7 @@ export function Login() {
       } 
       catch (error) {
 
-        console.error("Login Error:", error.code, error.message);
-        Alert.alert("Login Failed", error.message);
+        setError("Incorrect Email/Password");
 
       }
 
@@ -47,14 +47,14 @@ export function Login() {
             <View style={styles.loginContainer}>
                 <Text style={styles.loginHeader}>Login</Text>
                 <TextInput
-                  style={styles.loginInput}
+                  style={[styles.loginInput, error ? { borderColor: '#ff5252'} : null]}
                   placeholder="Email"
                   value={email}
                   onChangeText={setEmail}
                   placeholderTextColor='#67beff'
                 />
                 <TextInput
-                  style={styles.loginInput}
+                  style={[styles.loginInput, error ? { borderColor: '#ff5252'} : null]}
                   placeholder="Password"
                   secureTextEntry={true}
                   value={password}
@@ -72,6 +72,7 @@ export function Login() {
                 >
                   <Text style={styles.signUpText}>Sign Up?</Text>
                 </TouchableOpacity>
+                <Text style={styles.errorMsg}>{error}</Text>
             </View>
         </View>
     )
@@ -137,6 +138,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#67beff',
     marginTop: 10
+  },
+
+  errorMsg: {
+    fontSize: 15,
+    marginTop: 10,
+    color: '#ff5252'
   }
 
 });
