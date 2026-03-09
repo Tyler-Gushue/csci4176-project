@@ -72,6 +72,27 @@ export function ProfileScreen() {
             </View>
           </TouchableOpacity>
         </View>
+          <Text style={ styles.settingsText }>Username</Text>
+          <Text style={ styles.settingsText }>Email</Text>
+          <View style={ styles.settings}>
+            <View style={ styles.settingsRow }>
+              <Text style={ styles.settingsText }>Change Password</Text>
+              <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
+            </View>
+            <View style={ styles.settingsRow }>
+              <Text style={ styles.settingsText }>Change Email</Text>
+              <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
+            </View>
+            <View style={ styles.settingsRow }>
+              <Text style={ styles.settingsText }>Change Username</Text>
+              <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
+            </View>
+          </View>
+          <TouchableOpacity
+            style={ styles.button }
+          >
+              <Text style={ styles.buttonText }>Log Out</Text>
+          </TouchableOpacity>
       </View>
     </View>
   );
@@ -115,6 +136,23 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#67beff',
   },
+  settings: {
+    width: '90%',
+    gap: 10,
+    margin: 20,
+  },
+  settingsRow: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor: '#67beff',
+    borderBottomWidth: 2,
+    padding: 5
+  },
+  settingsText: {
+    color: '#67beff', 
+    fontSize: 20
+  },
   button: {
     backgroundColor: '#67beff',
     alignItems: 'center',
@@ -122,10 +160,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#67beff',
     borderRadius: 10,
-    marginTop: 5,
+    marginTop: 15,
     padding: 5,
   },
-  buttonText: {
+    buttonText: {
     fontSize: 15,
     color: '#cfe2f3'
   },
