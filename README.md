@@ -3,7 +3,7 @@
 
 ## Team Members
 * Ethan MacDonald (B00921556)
-* Tyler Gushue
+* Tyler Gushue (B00928343)
 * Daxuan Xiong
 
 ## Description

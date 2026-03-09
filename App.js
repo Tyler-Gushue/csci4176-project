@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import { HomeScreen } from './screens/Home.js'
 import { ProfileScreen } from './screens/Profile.js';
+import { MapScreen } from './screens/Map.js';
 
 import { Navigation } from './Navigation.js'
 
@@ -29,4 +30,5 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
   },
+  
 });

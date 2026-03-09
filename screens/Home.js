@@ -1,6 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
+import React, {useState, useEffect} from "react"
+import { fetchPosts } from "../DbUtil";
 
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 
 import { ScrollView, FlatList, Platform } from 'react-native';
@@ -9,24 +12,30 @@ import { ScrollView, FlatList, Platform } from 'react-native';
 import { fetchPosts } from '../DbUtil.js'
 
 function PostCard(props) {
+function PostCard({ post }) {
   return (
     <View style={styles.cardView}>
-      <Text style={styles.title}>{ props.post.title }</Text>
-      <Text style={styles.description}>{ props.post.description }</Text>
+      <Text style={styles.title}>{ post.title }</Text>
+      <Text style={styles.description}>{ post.description }</Text>
     </View>
   );
 }
 
 export function HomeScreen() {
   const navigation = useNavigation();
-
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     fetchPosts().then((data) => {
+<<<<<<< HEAD
        setPosts(data.map((v) => v));
     })
   });
+=======
+       setPosts(data.map((v, i) => <PostCard key={i} post={v} />));
+    });
+  }, []);
+>>>>>>> origin
 
   let topPaddingStyle = {};
   if (Platform.OS != 'web') {
@@ -36,6 +45,7 @@ export function HomeScreen() {
   }
 
   return (
+<<<<<<< HEAD
     <FlatList
       data={posts}
       renderItem={({ item }) => <PostCard post={item} />}
@@ -44,6 +54,12 @@ export function HomeScreen() {
     // <ScrollView>
     //   {posts}
     // </ScrollView>
+=======
+    <View>
+    {posts}
+    <Button title="Open Map" onPress={() => navigation.navigate("Map")}/>
+    </View>
+>>>>>>> origin
   );
 };
 
