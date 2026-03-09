@@ -3,6 +3,9 @@ import {View, StyleSheet, Text, TextInput, Button, FlatList, TouchableOpacity} f
 import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebaseConfig";
+import { useNavigation } from "@react-navigation/native";
+
+
 
 export function Signup() {
   const navigation = useNavigation();
@@ -67,7 +70,7 @@ export function Signup() {
 
   }
 
-  const signUp = async () => {
+
 
     return (
 
@@ -114,7 +117,7 @@ export function Signup() {
       </View>
 
     )
-  }
+
 }
 
 const styles = StyleSheet.create({
