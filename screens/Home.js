@@ -1,7 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
 
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { ScrollView } from 'react-native';
 
 
 import { fetchPosts } from '../DbUtil.js'
@@ -9,7 +11,7 @@ import { fetchPosts } from '../DbUtil.js'
 function PostCard(props) {
   return (
     <View style={styles.cardView}>
-      <Text style={styles.title}>{ props.post.name }</Text>
+      <Text style={styles.title}>{ props.post.title }</Text>
       <Text style={styles.description}>{ props.post.description }</Text>
     </View>
   );
@@ -26,7 +28,11 @@ export function HomeScreen() {
     })
   });
 
-  return (posts);
+  return (
+    <ScrollView>
+      {posts}
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -45,5 +51,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500
   }
-
 });
