@@ -4,7 +4,8 @@ import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebaseConfig";
 
-export default function Signup() {
+export function Signup() {
+  const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -13,6 +14,7 @@ export default function Signup() {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{12,}$/;
 
   const validateForm = () => {
+
 
     if (email == "" || username == "" || password == "" || confirmPassowrd == "") {
 
@@ -36,7 +38,7 @@ export default function Signup() {
     }
 
     registerUser();
-    
+
 
   }
 
@@ -55,7 +57,7 @@ export default function Signup() {
       });
 
       console.log("User registered and added to Firestore with ID:", user.uid);
-    } 
+    }
 
     catch (error) {
 
@@ -65,54 +67,54 @@ export default function Signup() {
 
   }
 
-  const signUp = async ()
+  const signUp = async () => {
 
-  return (
+    return (
 
       <View style={styles.container}>
-          <View style={styles.loginContainer}>
-              <Text style={styles.loginHeader}>Sign Up</Text>
-              <TextInput
-                style={styles.loginInput}
-                placeholder="Email"
-                placeholderTextColor='#67beff'
-                value={email}
-                onChange={setEmail}
-              />
-              <TextInput
-                style={styles.loginInput}
-                placeholder="Username"
-                placeholderTextColor='#67beff'
-                value={username}
-                onChange={setUsername}
-              />
-              <TextInput 
-                style={styles.loginInput}
-                placeholder="Password"
-                secureTextEntry={true}
-                placeholderTextColor='#67beff'
-                value={password}
-                onChange={setPassword}
-              />
-              <TextInput 
-                style={styles.loginInput}
-                placeholder="Confirm Password"
-                secureTextEntry={true}
-                placeholderTextColor='#67beff'
-                value={confirmPassowrd}
-                onChange={setConfirmPassword}
-              />
-              <TouchableOpacity
-                style={styles.loginButton}
-                onPress={validateForm}
-              >
-                  <Text style={styles.loginText}>Sign Up</Text>
-              </TouchableOpacity>
-          </View>
+        <View style={styles.loginContainer}>
+          <Text style={styles.loginHeader}>Sign Up</Text>
+          <TextInput
+            style={styles.loginInput}
+            placeholder="Email"
+            placeholderTextColor='#67beff'
+            value={email}
+            onChange={setEmail}
+          />
+          <TextInput
+            style={styles.loginInput}
+            placeholder="Username"
+            placeholderTextColor='#67beff'
+            value={username}
+            onChange={setUsername}
+          />
+          <TextInput
+            style={styles.loginInput}
+            placeholder="Password"
+            secureTextEntry={true}
+            placeholderTextColor='#67beff'
+            value={password}
+            onChange={setPassword}
+          />
+          <TextInput
+            style={styles.loginInput}
+            placeholder="Confirm Password"
+            secureTextEntry={true}
+            placeholderTextColor='#67beff'
+            value={confirmPassowrd}
+            onChange={setConfirmPassword}
+          />
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={validateForm}
+          >
+            <Text style={styles.loginText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-  )
-
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -169,5 +171,4 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#cfe2f3'
   }
-
 });

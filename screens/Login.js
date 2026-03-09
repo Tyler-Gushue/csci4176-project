@@ -1,7 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 
-export default function Login() {
+
+export function Login() {
+  const navigation = useNavigation();
 
     return (
 
@@ -13,7 +16,7 @@ export default function Login() {
                   placeholder="Username"
                   placeholderTextColor='#67beff'
                 />
-                <TextInput 
+                <TextInput
                   style={styles.loginInput}
                   placeholder="Password"
                   keyboardType="password"
@@ -27,7 +30,6 @@ export default function Login() {
                 </TouchableOpacity>
             </View>
         </View>
-
     )
 
 }
