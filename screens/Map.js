@@ -59,6 +59,7 @@ export function MapScreen(){
                                 latitude: event.latitude,
                                 longitude: event.longitude,
                             }}
+                            pinColor='#67beff'
                             title={event.title}
                             description={event.description}
                             onPress={() => setSelectedEvent(event)}
@@ -134,6 +135,6 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 15,
-        color: '#cfe2f3'
+        color: '#fff'
     },
 });

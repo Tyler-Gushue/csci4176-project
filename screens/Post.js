@@ -130,10 +130,10 @@ export function PostScreen() {
           />
 
           <TouchableOpacity
-            style={styles.loginButton}
+            style={styles.button}
             onPress={() => { validateForm(); }}
           >
-            <Text style={styles.loginText}>Post</Text>
+            <Text style={styles.buttonText}>Post</Text>
           </TouchableOpacity>
 
         </View>
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10
   },
-  loginButton: {
+  button: {
     backgroundColor: '#67beff',
     alignItems: 'center',
     width: '100%',
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
     padding: 5,
   },
-  loginText: {
+  buttonText: {
     fontSize: 15,
-    color: '#cfe2f3'
+    color: '#fff'
   },
 });

@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 
   loginInput: {
     color: '#67beff',
-    backgroundColor: '#cfe2f3',
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#67beff',
     width: '100%',
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
 
   loginText: {
     fontSize: 15,
-    color: '#cfe2f3'
+    color: '#fff'
   },
 
   signUpText: {
