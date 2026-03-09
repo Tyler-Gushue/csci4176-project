@@ -54,7 +54,7 @@ export function PostScreen() {
   return (
     <View style={ styles.cardView }>
       <Text style={styles.title}>Make a Post</Text>
-      <View style={ {display: 'flex', flexDirection: 'column', gap: '20px'} }>
+      <View style={ {display: 'flex', flexDirection: 'column', gap: 20} }>
 
 
         <TextInput
@@ -91,11 +91,12 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     margin: 10,
+    marginTop: '15%',
     borderRadius: 10
   },
   title: {
     fontSize: 20,
-    fontWeight: 650,
+    fontWeight: '600',
     paddingBottom: 20,
   },
   postInput: {

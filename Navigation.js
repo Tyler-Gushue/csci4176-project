@@ -8,6 +8,7 @@ import { FriendsScreen } from './screens/Friends.js'
 import { MapScreen } from './screens/Map.js'
 import { Login } from './screens/Login.js'
 import { Signup } from './screens/Signup.js'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -18,14 +19,60 @@ const Tab = createBottomTabNavigator();
 export function NavBar() {
   return (
     <Tab.Navigator screenOptions={{
-      headerShown: false
+      headerShown: false,
+      tabBarActiveTintColor: '#cfe2f3',
+      tabBarInactiveTintColor: '#b4dafb',
+      tabBarStyle: {
+        backgroundColor: '#67beff',
+        borderColor: '#67beff'
+      }
     }}>
-      <Tab.Screen name="Home" component={HomeScreen}/>
-      <Tab.Screen name="Maps" component={MapScreen}/>
-      <Tab.Screen name="Post" component={PostScreen}/>
-      <Tab.Screen name="Friends" component={FriendsScreen}/>
+      <Tab.Screen 
+        name="Home" 
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home" size={size} color={color} />
+          )
+        }}
+      />
+      <Tab.Screen 
+        name="Map" 
+        component={MapScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="map" size={size} color={color} />
+          )
+        }}
+      />
+      <Tab.Screen 
+        name="Post" 
+        component={PostScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="plus-box" size={size} color={color} />
+          )
+        }}
+      />
+      <Tab.Screen 
+        name="Friends" 
+        component={FriendsScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account-group" size={size} color={color} />
+          )
+        }}
+      />
 
-      <Tab.Screen name="Profile" component={ProfileScreen}/>
+      <Tab.Screen 
+        name="Profile" 
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" size={size} color={color} />
+          )
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -45,6 +92,11 @@ export const NavigationRoutes = createNativeStackNavigator({
     },
     Login: {
       screen: Login,
+      options: { headerShown: false }
+    },
+
+    Map: {
+      screen: MapScreen,
       options: { headerShown: false }
     }
   },

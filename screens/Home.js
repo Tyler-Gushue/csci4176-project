@@ -40,15 +40,16 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     margin: 10,
+    marginTop: '15%',
     borderRadius: 10
   },
   title: {
     fontSize: 20,
-    fontWeight: 650,
+    fontWeight: '600',
   },
   description: {
     paddingTop: 10,
     fontSize: 16,
-    fontWeight: 500
+    fontWeight: '500'
   }
 });

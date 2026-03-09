@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     margin: 10,
+    marginTop: '15%',
     borderRadius: 10
   },
   title: {

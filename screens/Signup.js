@@ -143,17 +143,16 @@ export function Signup() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#cfe2f3',
+    backgroundColor: '#b4dafb',
     justifyContent: 'center',
     alignItems: 'center',
-    color: '#90caff'
   },
 
   signUpContainer: {
     width: '75%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#b4dafb',
+    backgroundColor: '#cfe2f3',
     borderWidth: 1,
     borderColor: '#67beff',
     borderRadius: 10,
