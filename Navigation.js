@@ -8,7 +8,6 @@ import { FriendsScreen } from './screens/Friends.js'
 import { MapScreen } from './screens/Map.js'
 import { Login } from './screens/Login.js'
 import { Signup } from './screens/Signup.js'
-import { MapScreen } from './screens/Map.js';
 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -46,6 +45,7 @@ export const NavigationRoutes = createNativeStackNavigator({
     },
     Login: {
       screen: Login,
+      options: { headerShown: false }
     },
 
     Map: {
