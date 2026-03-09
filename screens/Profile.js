@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useNavigation } from "@react-navigation/native";
-import { View, StyleSheet, Text, Button, Image, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Button, Image, TouchableOpacity, Platform } from 'react-native';
 import { Camera } from 'expo-camera';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
@@ -8,12 +8,21 @@ import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
 
+import { fetchUserProfile } from '../DbUtil';
+
 
 export function ProfileScreen() {
   const [image, setImage] = useState(require('../Images/NoProfileImg.webp'));
 
   const navigation = useNavigation();
   let cameraRef = useRef();
+
+  // Fetch the user's profile information
+  const [profileData, setProfileData] = useState(null);
+
+  fetchUserProfile().then((data) => {
+    setProfileData(data);
+  });
 
   const handleEditProfileImg = () => {
 
@@ -72,8 +81,8 @@ export function ProfileScreen() {
             </View>
           </TouchableOpacity>
         </View>
-          <Text style={ styles.settingsText }>Username</Text>
-          <Text style={ styles.settingsText }>Email</Text>
+        <Text style={styles.settingsText}>{ (profileData != null) ? profileData.username : 'Username' }</Text>
+          <Text style={ styles.settingsText }>{ (profileData != null) ? profileData.email : 'Email' }</Text>
           <View style={ styles.settings}>
             <View style={ styles.settingsRow }>
               <Text style={ styles.settingsText }>Change Password</Text>
@@ -109,25 +118,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     margin: 10,
-    marginTop: '12%',
+    marginTop: (Platform.OS != 'web') ? '15%' : '',
     borderRadius: 10,
   },
   title: {
     fontSize: 50,
-    color: '#67beff', 
+    color: '#67beff',
   },
   profileImage: {
     width: 100,
     height: 100,
     borderRadius: 100,
-    borderWidth: 2,       
-    borderColor: '#67beff', 
+    borderWidth: 2,
+    borderColor: '#67beff',
   },
   editIconContainer: {
     position: 'absolute',
     bottom: 5,
     right: 5,
-    backgroundColor: 'white', 
+    backgroundColor: 'white',
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -150,8 +159,10 @@ const styles = StyleSheet.create({
     padding: 5
   },
   settingsText: {
-    color: '#67beff', 
-    fontSize: 20
+    color: '#67beff',
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 10
   },
   button: {
     backgroundColor: '#67beff',

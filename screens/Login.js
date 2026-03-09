@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, TextInput, Button, FlatList, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation } from "@react-navigation/native";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { browserSessionPersistence, getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -13,6 +13,16 @@ export function Login() {
   const [error, setError] = useState("");
 
   const navigation = useNavigation();
+
+  // Check if the user is already logged in and redirect if true
+  auth.onAuthStateChanged((user) => {
+    if (user != null) {
+      navigation.navigate('Home');
+    }
+
+    // Else, Not logged in
+  })
+
 
   const handleLogin = async () => {
 
@@ -29,10 +39,10 @@ export function Login() {
           const user = userCredential.user;
 
           await AsyncStorage.setItem('userID', user.uid);
-          
-          navigation.navigate('Home'); 
 
-      } 
+          navigation.navigate('Home');
+
+      }
       catch (error) {
 
         setError("Incorrect Email/Password");
@@ -67,7 +77,7 @@ export function Login() {
                 >
                     <Text style={styles.loginText}>Login</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => navigation.navigate('Signup')}
                 >
                   <Text style={styles.signUpText}>Sign Up?</Text>

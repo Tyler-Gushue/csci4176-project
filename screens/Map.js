@@ -13,9 +13,7 @@ export function MapScreen(){
         longitudeDelta: 0.05,
     });
 
-    const [userLocation, setUserLocation] = useState(null);
-    const [selectedEvent, setSelectedEvent] = useState(null);
-    const [events, setEvents] = useState([]);
+import { View, StyleSheet, Text, Button, Platform } from 'react-native';
 
     useEffect(() => {
         async function loadMapData() {
@@ -137,4 +135,15 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#fff'
     },
+  cardView: {
+    padding: 20,
+    backgroundColor: 'white',
+    margin: 10,
+    marginTop: (Platform.OS != 'web') ? '15%' : '',
+    borderRadius: 10
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 650,
+  },
 });
