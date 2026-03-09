@@ -22,7 +22,16 @@ const RootStack = createNativeStackNavigator({
 const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
-  return <MapScreen />;
+  return (
+    <div>
+
+      <div style={ styles.navBar }>
+        <Button>Home</Button>
+      </div>
+
+      <Navigation />
+    </div>
+  );
 }
 
 
