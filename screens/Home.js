@@ -1,7 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, Button } from "react-native";
 import React, {useState, useEffect} from "react"
-import { fetchPosts } from "../DbUtil";
+
+import { fetchPosts } from '../DbUtil.js'
+import { ScrollView, FlatList, Platform } from 'react-native';
 
 function PostCard({ post }) {
   return (
@@ -18,15 +20,26 @@ export function HomeScreen() {
 
   useEffect(() => {
     fetchPosts().then((data) => {
-       setPosts(data.map((v, i) => <PostCard key={i} post={v} />));
-    });
-  }, []);
+       setPosts(data.map((v) => v));
+    })
+  });
+
+  let topPaddingStyle = {};
+  if (Platform.OS != 'web') {
+    topPaddingStyle = {
+      paddingTop: '15%'
+    };
+  }
 
   return (
-    <View>
-    {posts}
-    <Button title="Open Map" onPress={() => navigation.navigate("Map")}/>
-    </View>
+    <FlatList
+      data={posts}
+      renderItem={({ item }) => <PostCard post={item} />}
+      style={topPaddingStyle}
+    />
+    // <ScrollView>
+    //   {posts}
+    // </ScrollView>
   );
 };
 
@@ -34,17 +47,16 @@ const styles = StyleSheet.create({
   cardView: {
     padding: 20,
     backgroundColor: 'white',
-    margin: 10,
-    marginTop: '15%',
+    margin: 7,
     borderRadius: 10
   },
   title: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: 600,
   },
   description: {
     paddingTop: 10,
     fontSize: 16,
-    fontWeight: '500'
+    fontWeight: 500
   }
 });

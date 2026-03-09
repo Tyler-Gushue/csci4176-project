@@ -3,9 +3,12 @@ import { db } from './screens/firebaseConfig.js';
 
 import { doc, setDoc, addDoc, getDoc, getDocs, query, collection } from "firebase/firestore";
 import { ref, push } from "firebase/database";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from './screens/firebaseConfig.js';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const DB_POSTS_NAME = "posts"
+const DB_USERS_NAME = "users"
+
 const DB_EVENTS_NAME = "events";
 
 export async function fetchPosts() {
@@ -45,4 +48,15 @@ export async function addEvent(event){
     ...event,
     createdAt: new Date(),
   });
+}
+
+
+
+export async function fetchUserProfile(data) {
+  if (auth.currentUser == null) {
+    return null;
+  }
+
+  const q = query(doc(db, DB_USERS_NAME, auth.currentUser.uid));
+  return (await getDoc(q)).data();
 }
