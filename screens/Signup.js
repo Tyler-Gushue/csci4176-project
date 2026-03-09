@@ -72,43 +72,48 @@ export function Signup() {
   return (
 
     <View style={styles.container}>
-      <View style={styles.loginContainer}>
-        <Text style={styles.loginHeader}>Sign Up</Text>
+      <View style={styles.signUpContainer}>
+        <Text style={styles.signUpHeader}>Sign Up</Text>
         <TextInput
-          style={styles.loginInput}
+          style={styles.signUpInput}
           placeholder="Email"
           placeholderTextColor='#67beff'
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChangeText={(e) => setEmail(e.target.value)}
         />
         <TextInput
-          style={styles.loginInput}
+          style={styles.signUpInput}
           placeholder="Username"
           placeholderTextColor='#67beff'
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChangeText={(e) => setUsername(e.target.value)}
         />
         <TextInput
-          style={styles.loginInput}
+          style={styles.signUpInput}
           placeholder="Password"
           secureTextEntry={true}
           placeholderTextColor='#67beff'
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChangeText={(e) => setPassword(e.target.value)}
         />
         <TextInput
-          style={styles.loginInput}
+          style={styles.signUpInput}
           placeholder="Confirm Password"
           secureTextEntry={true}
           placeholderTextColor='#67beff'
           value={confirmPassowrd}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChangeText={(e) => setConfirmPassword(e.target.value)}
         />
         <TouchableOpacity
-          style={styles.loginButton}
+          style={styles.signUpButton}
           onPress={validateForm}
         >
-          <Text style={styles.loginText}>Sign Up</Text>
+          <Text style={styles.signUpText}>Sign Up</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Text style={styles.loginText}>Login?</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -126,7 +131,7 @@ const styles = StyleSheet.create({
     color: '#90caff'
   },
 
-  loginContainer: {
+  signUpContainer: {
     width: '75%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -137,14 +142,14 @@ const styles = StyleSheet.create({
     padding: 30
   },
 
-  loginHeader: {
+  signUpHeader: {
     color: '#67beff',
     fontWeight: 'bold',
     fontSize: 40,
     marginBottom: 15
   },
 
-  loginInput: {
+  signUpInput: {
     color: '#67beff',
     backgroundColor: '#cfe2f3',
     borderWidth: 1,
@@ -156,7 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
 
-  loginButton: {
+  signUpButton: {
     backgroundColor: '#67beff',
     alignItems: 'center',
     width: '100%',
@@ -167,8 +172,14 @@ const styles = StyleSheet.create({
     padding: 5,
   },
 
-  loginText: {
+  signUpText: {
     fontSize: 15,
     color: '#cfe2f3'
+  },
+
+  loginText: {
+    fontSize: 15,
+    color: '#67beff',
+    marginTop: 10
   }
 });

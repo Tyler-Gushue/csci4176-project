@@ -1,4 +1,3 @@
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createStaticNavigation } from '@react-navigation/native';
 
@@ -23,16 +22,12 @@ export function NavBar() {
 }
 
 export const NavigationRoutes = createNativeStackNavigator({
-  initialRouteName: 'Home',
+  initialRouteName: 'Login',
   screens: {
     Home: {
       screen: NavBar,
       options: { headerShown: false }
 
-    },
-    Profile: {
-      screen: ProfileScreen,
-      options: { headerShown: false }
     },
 
     Signup: {

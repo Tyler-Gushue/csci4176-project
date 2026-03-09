@@ -1,10 +1,45 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text, TextInput, Button, FlatList, TouchableOpacity, Alert} from 'react-native';
 import { useNavigation } from "@react-navigation/native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "./firebaseConfig";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export function Login() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const navigation = useNavigation();
+
+  const handleLogin = async () => {
+
+    if (email == "" || password == "") {
+
+      console.log('error');
+      return
+
+    }
+
+    try {
+
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
+
+          await AsyncStorage.setItem('userToken', user.uid);
+          
+          navigation.navigate('Home'); 
+
+      } 
+      catch (error) {
+
+        console.error("Login Error:", error.code, error.message);
+        Alert.alert("Login Failed", error.message);
+
+      }
+
+  }
 
     return (
 
@@ -13,20 +48,29 @@ export function Login() {
                 <Text style={styles.loginHeader}>Login</Text>
                 <TextInput
                   style={styles.loginInput}
-                  placeholder="Username"
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={setEmail}
                   placeholderTextColor='#67beff'
                 />
                 <TextInput
                   style={styles.loginInput}
                   placeholder="Password"
-                  keyboardType="password"
+                  secureTextEntry={true}
+                  value={password}
+                  onChangeText={setPassword}
                   placeholderTextColor='#67beff'
                 />
                 <TouchableOpacity
                   style={styles.loginButton}
-                  onPress={() => console.log('Pressed!')}
+                  onPress={handleLogin}
                 >
                     <Text style={styles.loginText}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={() => navigation.navigate('Signup')}
+                >
+                  <Text style={styles.signUpText}>Sign Up?</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -87,6 +131,12 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 15,
     color: '#cfe2f3'
+  },
+
+  signUpText: {
+    fontSize: 15,
+    color: '#67beff',
+    marginTop: 10
   }
 
 });
