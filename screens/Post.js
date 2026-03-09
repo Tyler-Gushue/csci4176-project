@@ -10,15 +10,18 @@ export function PostScreen() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [game, setGame] = useState("");
   const [type, setType] = useState("");
+  const [location, setLocation] = useState("");
 
 
   const titleRef = useRef(null);
   const descriptionRef = useRef(null);
+  const gameRef = useRef(null);
 
 
   const submit = async () => {
-    await addPost(name, description);
+    await addPost(name, description, type, location, game);
   }
 
   const validateForm = () => {
@@ -40,6 +43,10 @@ export function PostScreen() {
       return;
     }
 
+    if (!checkField(gameRef)) {
+      return;
+    }
+
     submit().then(() => {
       console.log("Post submitted!");
 
@@ -56,20 +63,30 @@ export function PostScreen() {
 
 
           <TextInput
-
             style={styles.postInput}
             placeholder="Title"
+            placeholderTextColor="#67beff"
             ref={ titleRef }
             value={ name }
-            onChangeText={setName}
+            onChangeText={ setName }
           />
 
           <TextInput
             style={styles.postInput}
             placeholder="Description"
+            placeholderTextColor="#67beff"
             ref={ descriptionRef }
             value={ description }
-            onChangeText={setDescription}
+            onChangeText={ setDescription }
+          />
+
+          <TextInput
+            style={styles.postInput}
+            placeholder="Game"
+            placeholderTextColor="#67beff"
+            ref={ gameRef }
+            value={ game }
+            onChangeText={ setGame }
           />
 
           <Dropdown
@@ -89,6 +106,26 @@ export function PostScreen() {
             value={type}
             onChange={item => {
               setType(item.value);
+            }}
+          />
+
+          <Dropdown
+            style={styles.postInput} 
+            
+            placeholderStyle={{ color: '#67beff', fontSize: 15 }}
+            selectedTextStyle={{ color: '#67beff', fontSize: 15 }}
+
+            data={[
+              { label: 'Online', value: 'Online' },
+              { label: 'In-person', value: 'In-person' }
+            ]}
+            
+            labelField="label"
+            valueField="value"
+            placeholder="Select Location"
+            value={location}
+            onChange={item => {
+              setLocation(item.value);
             }}
           />
 
@@ -120,9 +157,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 40,
+    color: '#67beff',
     paddingBottom: 20,
+    fontWeight: '600',
   },
   form: {
     flex: 1,
