@@ -19,20 +19,60 @@ export function MapScreen(){
     const sampleEvents = [
         {
             id: "1",
-            title: "LAN Party",
-            description: "Casual Meetup",
-            latitude: 44.6534,
-            longitude: -63.5362,
+            title: "Valorant Competitive Squad",
+            description: "Looking for 2 Gold-Platinum players for ranked games tonight",
+            game: "Valorant",
+            date: "April 2, 2026",
+            time: "7:00PM",
+            locationName: "Halifax Central Library",
+            host: "Gabriel",
+            skillLevel: "Gold-Plat",
+            latitude: 44.6488,
+            longitude: -63.5752,
         },
 
         {
             id: "2",
-            title: "Raid Night",
-            description: "Dungeon Event",
-            latitude: 44.642,
-            longitude: -63.5496,
+            title: "Smash Ultimate Casuals",
+            description: "Bring your own controller for some friendly matches",
+            game: "Super Smash Bros. Ultimate",
+            date: "March 20, 2026",
+            time: "3:00PM",
+            locationName: "Dal Student Union Building",
+            host: "Jeff",
+            skillLevel: "All skill levels",
+            latitude: 44.6376,
+            longitude: -63.5912,
         },
-    ];
+
+        {
+            id: "3",
+            title: "League of Legends Flex Ranked",
+            description: "Looking for top and jungle player for 5 stack queue",
+            game: "League of Legends",
+            date: "March 30, 2026",
+            time: "9:00PM",
+            locationName: "Spring Garden Road",
+            host: "Faker",
+            skillLevel: "Silver-Gold",
+            latitude: 44.6428,
+            longitude: -63.5802,
+        },
+
+        {
+            id: "4",
+            title: "Minecraft Build Competition",
+            description: "Small building competition for a survival base",
+            game: "Minecraft",
+            date: "March 15, 2026",
+            time: "4:00PM",
+            locationName: "Point Pleasant Park",
+            host: "Jason",
+            skillLevel: "Beginner Friendly",
+            latitude: 44.6295,
+            longitude: -63.5652,
+        }
+    ]
 
     useEffect(() => {
         async function getLocation(){
@@ -90,6 +130,12 @@ export function MapScreen(){
                     <View style={styles.eventCard}>
                         <Text style={styles.eventTitle}>{selectedEvent.title}</Text>
                         <Text>{selectedEvent.description}</Text>
+                        <Text>Game: {selectedEvent.game}</Text>
+                        <Text>Date: {selectedEvent.date}</Text>
+                        <Text>Time: {selectedEvent.time}</Text>
+                        <Text>Location: {selectedEvent.locationName}</Text>
+                        <Text>Host: {selectedEvent.host}</Text>
+                        <Text>Skill Level: {selectedEvent.skillLevel}</Text>
                         <Button title="Close" onPress={() => setSelectedEvent(null)}/>
                     </View>
                 )}
