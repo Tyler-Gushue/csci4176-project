@@ -1,11 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, TextInput, Button, FlatList, TouchableOpacity} from 'react-native';
-import { createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendPasswordResetEmail, getAuth } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
-
-const TESTING_DO_NOT_VALIDATE = true;
 
 export function Signup() {
   const navigation = useNavigation();
@@ -14,14 +12,9 @@ export function Signup() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassowrd, setConfirmPassword] = useState("");
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{12,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{6,}$/;
 
   const validateForm = () => {
-    if (TESTING_DO_NOT_VALIDATE) {
-      registerUser();
-      return;
-    }
-
     if (email == "" || username == "" || password == "" || confirmPassowrd == "") {
 
       console.log("error");
@@ -51,7 +44,6 @@ export function Signup() {
   const registerUser = async () => {
 
     try {
-
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
