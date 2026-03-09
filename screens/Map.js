@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, {useEffect, useState} from "react";
 import {View, Text, StyleSheet} from "react-native";
 import MapView, {Marker} from "react-native-maps";
@@ -99,3 +100,33 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 });
+=======
+import { useNavigation } from "@react-navigation/native";
+
+
+import { View, StyleSheet, Text, Button } from 'react-native';
+
+
+export function MapScreen() {
+  const navigation = useNavigation();
+
+  return (
+    <View style={ styles.cardView }>
+      <Text style={styles.title}>Map</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  cardView: {
+    padding: 20,
+    backgroundColor: 'white',
+    margin: 10,
+    borderRadius: 10
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 650,
+  },
+});
+>>>>>>> 46a829733fa4a8b6854e3f25265ddc720d589bb6

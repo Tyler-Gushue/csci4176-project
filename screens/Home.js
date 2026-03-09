@@ -4,19 +4,22 @@ import { View, Text, StyleSheet, Button } from "react-native";
 function PostCard() {
   return (
     <View style={styles.cardView}>
-      <Text style={styles.title}>Some Text</Text>
-      <Text style={styles.description}>Some info</Text>
+      <Text style={styles.title}>{ props.post.title }</Text>
+      <Text style={styles.description}>{ props.post.description }</Text>
     </View>
-
-
   );
-
-
-
 }
 
 export function HomeScreen() {
   const navigation = useNavigation();
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetchPosts().then((data) => {
+       setPosts(data.map((v) => <PostCard post={v} />));
+    })
+  });
 
   return (
     <View>
@@ -42,5 +45,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500
   }
-
 });
