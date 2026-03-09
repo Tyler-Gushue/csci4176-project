@@ -4,6 +4,7 @@ import { createUserWithEmailAndPassword, sendPasswordResetEmail, getAuth } from 
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Signup() {
   const navigation = useNavigation();
@@ -70,13 +71,13 @@ export function Signup() {
         setError("Email already in use");
 
       }
-      else if (error.code == "invalid-email") {
+      else if (error.code == "auth/invalid-email") {
 
         setError("Invalid email");
 
       }
       else {
-        setError("Error during sign up")
+        setError("An error occured during sign up")
       }
 
     }

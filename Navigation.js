@@ -41,9 +41,11 @@ export const NavigationRoutes = createNativeStackNavigator({
 
     Signup: {
       screen: Signup,
+      options: { headerShown: false }
     },
     Login: {
       screen: Login,
+      options: { headerShown: false }
     }
   },
 });
