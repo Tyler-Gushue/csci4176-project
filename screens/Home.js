@@ -6,9 +6,6 @@ import { fetchPosts } from '../DbUtil.js'
 import { ScrollView, FlatList, Platform } from 'react-native';
 
 
-import { ScrollView, FlatList, Platform } from 'react-native';
-
-
 
 function PostCard({ post }) {
   return (

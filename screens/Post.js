@@ -43,12 +43,12 @@ export function PostScreen() {
       return;
     }
 
-    if (!checkField(gameRef)) {
-      return;
-    }
+    // if (!checkField(gameRef)) {
+    //   return;
+    // }
 
     submit().then(() => {
-      console.log("Post submitted!");
+      navigation.navigate('Home');
 
       setName("");
       setDescription("");
