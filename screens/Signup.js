@@ -5,7 +5,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "./firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
 
-
+const TESTING_DO_NOT_VALIDATE = true;
 
 export function Signup() {
   const navigation = useNavigation();
@@ -17,7 +17,10 @@ export function Signup() {
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{12,}$/;
 
   const validateForm = () => {
-
+    if (TESTING_DO_NOT_VALIDATE) {
+      registerUser();
+      return;
+    }
 
     if (email == "" || username == "" || password == "" || confirmPassowrd == "") {
 
@@ -68,55 +71,57 @@ export function Signup() {
 
     }
 
+    navigation.navigate("Home");
+
   }
 
 
 
-    return (
+  return (
 
-      <View style={styles.container}>
-        <View style={styles.loginContainer}>
-          <Text style={styles.loginHeader}>Sign Up</Text>
-          <TextInput
-            style={styles.loginInput}
-            placeholder="Email"
-            placeholderTextColor='#67beff'
-            value={email}
-            onChange={setEmail}
-          />
-          <TextInput
-            style={styles.loginInput}
-            placeholder="Username"
-            placeholderTextColor='#67beff'
-            value={username}
-            onChange={setUsername}
-          />
-          <TextInput
-            style={styles.loginInput}
-            placeholder="Password"
-            secureTextEntry={true}
-            placeholderTextColor='#67beff'
-            value={password}
-            onChange={setPassword}
-          />
-          <TextInput
-            style={styles.loginInput}
-            placeholder="Confirm Password"
-            secureTextEntry={true}
-            placeholderTextColor='#67beff'
-            value={confirmPassowrd}
-            onChange={setConfirmPassword}
-          />
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={validateForm}
-          >
-            <Text style={styles.loginText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
+    <View style={styles.container}>
+      <View style={styles.loginContainer}>
+        <Text style={styles.loginHeader}>Sign Up</Text>
+        <TextInput
+          style={styles.loginInput}
+          placeholder="Email"
+          placeholderTextColor='#67beff'
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextInput
+          style={styles.loginInput}
+          placeholder="Username"
+          placeholderTextColor='#67beff'
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <TextInput
+          style={styles.loginInput}
+          placeholder="Password"
+          secureTextEntry={true}
+          placeholderTextColor='#67beff'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <TextInput
+          style={styles.loginInput}
+          placeholder="Confirm Password"
+          secureTextEntry={true}
+          placeholderTextColor='#67beff'
+          value={confirmPassowrd}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={validateForm}
+        >
+          <Text style={styles.loginText}>Sign Up</Text>
+        </TouchableOpacity>
       </View>
+    </View>
 
-    )
+  )
 
 }
 
