@@ -14,7 +14,9 @@ const Tab = createBottomTabNavigator();
 
 export function NavBar() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator screenOptions={{
+      headerShown: false
+    }}>
       <Tab.Screen name="Home" component={HomeScreen}/>
       <Tab.Screen name="Profile" component={ProfileScreen}/>
     </Tab.Navigator>
