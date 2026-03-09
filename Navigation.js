@@ -11,7 +11,6 @@ import { Signup } from './screens/Signup.js'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
-
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 
@@ -28,8 +27,8 @@ export function NavBar() {
         borderColor: '#67beff'
       }
     }}>
-      <Tab.Screen 
-        name="Home" 
+      <Tab.Screen
+        name="Home"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -37,8 +36,8 @@ export function NavBar() {
           )
         }}
       />
-      <Tab.Screen 
-        name="Map" 
+      <Tab.Screen
+        name="Map"
         component={MapScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -46,8 +45,8 @@ export function NavBar() {
           )
         }}
       />
-      <Tab.Screen 
-        name="Post" 
+      <Tab.Screen
+        name="Post"
         component={PostScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -55,8 +54,8 @@ export function NavBar() {
           )
         }}
       />
-      <Tab.Screen 
-        name="Friends" 
+      <Tab.Screen
+        name="Friends"
         component={FriendsScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -65,8 +64,8 @@ export function NavBar() {
         }}
       />
 
-      <Tab.Screen 
-        name="Profile" 
+      <Tab.Screen
+        name="Profile"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
