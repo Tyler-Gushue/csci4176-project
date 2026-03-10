@@ -24,6 +24,9 @@ export function ProfileScreen() {
     setProfileData(data);
   });
 
+  /**
+   * Prompts user with options when changing profile photo
+   */
   const handleEditProfileImg = () => {
 
     Alert.alert(
@@ -38,10 +41,15 @@ export function ProfileScreen() {
 
   }
 
+  /**
+   * function for taking a photo
+   * @returns - return only occurs when an error happens
+   */
   const takePhoto = async () => {
 
-    const permission = await Camera.requestCameraPermissionsAsync();
+    const permission = await Camera.requestCameraPermissionsAsync(); // asks for camera permission
 
+    // checks if permission was granted
     if (!permission.status === "granted") {
 
       Alert.alert(
@@ -52,14 +60,18 @@ export function ProfileScreen() {
 
     }
 
+    // launches camera
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
     });
 
-    setImage({ uri: result.assets[0].uri });
+    setImage({ uri: result.assets[0].uri }); // sets pfp to picture taken
 
   }
 
+  /**
+   * Function that will be used for uploading a photo from library for pfp
+   */
   const uploadPhoto = () => {
 
   }
