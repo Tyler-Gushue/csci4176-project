@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {View, Text, StyleSheet, Button, TouchableOpacity, Platform} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, Platform} from "react-native";
 import MapView, {Marker} from "react-native-maps";
 import * as Location from "expo-location";
 import { fetchEvents } from "../DbUtil";
@@ -36,7 +36,13 @@ export function MapScreen(){
             }
 
             const eventData = await fetchEvents();
-            setEvents(eventData);
+            setEvents(eventData.filter((event) => event.latitude != null && event.longitude != null)
+            .map((event) => ({
+                ...event,
+                latitude: Number(event.latitude),
+                longitude: Number(event.longitude),
+            }))
+        );
         }
 
         loadMapData();
@@ -140,15 +146,11 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#fff'
     },
-  cardView: {
-    padding: 20,
-    backgroundColor: 'white',
-    margin: 10,
-    marginTop: (Platform.OS != 'web') ? '15%' : '',
-    borderRadius: 10
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 650,
-  },
+    cardView: {
+        padding: 20,
+        backgroundColor: 'white',
+        margin: 10,
+        marginTop: (Platform.OS != 'web') ? '15%' : 0,
+        borderRadius: 10
+    },
 });
