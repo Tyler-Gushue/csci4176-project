@@ -17,6 +17,15 @@ export async function fetchPosts() {
   return snapshot.docs.map((v) => v.data());
 }
 
+/**
+ * Creates a new post
+ * @param {title of post} title 
+ * @param {description of post} description 
+ * @param {type of post competitive/casual} type 
+ * @param {location of post online/in-person} location 
+ * @param {game of the post} game 
+ * @returns 
+ */
 export async function addPost(title, description, type, location, game) {
 
   const userID = await AsyncStorage.getItem('userID');
@@ -34,6 +43,10 @@ export async function addPost(title, description, type, location, game) {
   });
 }
 
+/**
+ * function for getting all events
+ * @returns 
+ */
 export async function fetchEvents() {
   const q = query(collection(db, DB_EVENTS_NAME));
   const snapshot = await getDocs(q);
@@ -43,6 +56,11 @@ export async function fetchEvents() {
   }));
 }
 
+/**
+ * function for adding an event
+ * @param {event being added} event 
+ * @returns 
+ */
 export async function addEvent(event){
   return addDoc(collection(db, DB_EVENTS_NAME), {
     ...event,

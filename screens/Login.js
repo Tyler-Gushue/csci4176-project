@@ -23,8 +23,13 @@ export function Login() {
     // Else, Not logged in
   })
 
+  /**
+   * Function that logs in a user
+   * @returns - return only happens if an error occurs
+   */
   const handleLogin = async () => {
 
+    // checks to see if all form data is filled
     if (email == "" || password == "") {
 
       setError("Email/Password is Required");
@@ -34,12 +39,11 @@ export function Login() {
 
     try {
 
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
+          const userCredential = await signInWithEmailAndPassword(auth, email, password); // attemps to log in user
+          const user = userCredential.user; // gets user's credentials
 
-          await AsyncStorage.setItem('userID', user.uid);
-
-          navigation.navigate('Home');
+          await AsyncStorage.setItem('userID', user.uid); // saves user ID for session persistance
+          navigation.navigate('Home'); // navigates to the home page
 
       }
       catch (error) {

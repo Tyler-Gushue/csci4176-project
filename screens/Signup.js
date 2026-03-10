@@ -16,7 +16,13 @@ export function Signup() {
   const [error, setError] = useState("");
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{6,}$/;
 
+  /**
+   * Function to validate sign up form data
+   * @returns - on returns if error
+   */
   const validateForm = () => {
+
+    // checks if all form data is entered
     if (email == "" || username == "" || password == "" || confirmPassowrd == "") {
 
       setError("All fields must be set")
@@ -24,6 +30,7 @@ export function Signup() {
 
     }
 
+    // checks if password passes regex
     if (!passwordRegex.test(password)) {
 
       setError("Password must have ONE number , ONE uppercase & lower letter, and ONE special character.")
@@ -31,6 +38,7 @@ export function Signup() {
 
     }
 
+    // checks if password equals confirm passowrd
     if (password != confirmPassowrd) {
 
       setError("Passwords must match")
@@ -43,29 +51,32 @@ export function Signup() {
 
   }
 
+  /**
+   * Function that registers a user
+   */
   const registerUser = async () => {
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
 
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password); // creates user
+      const user = userCredential.user; // gets user's credentials
 
+      // saves user with Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: email,
         username: username,
         createdAt: new Date(),
       });
 
-      console.log("User registered and added to Firestore with ID:", user.uid);
+      await AsyncStorage.setItem('userID', user.uid); // saves user ID for session persistance
 
-      await AsyncStorage.setItem('userID', user.uid);
-
-      navigation.navigate("Home");
+      navigation.navigate("Home"); // navigates to the home page
 
     }
 
     catch (error) {
 
+      // if statemetns to check what error has occured
       if (error.code == "auth/email-already-in-use") {
 
         setError("Email already in use");
