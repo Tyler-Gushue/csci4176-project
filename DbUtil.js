@@ -24,7 +24,7 @@ export async function addPost(title, description, type, location, game) {
   return addDoc(collection(db, DB_POSTS_NAME), {
     title: title,
     description: description,
-    createdAt: new Date(),
+    createdAt: Date.now(),
     type: type,
     location: location,
     game: game,
@@ -51,6 +51,9 @@ export async function addEvent(event){
 }
 
 
+/*
+ * User helpers
+ */
 
 export async function fetchUserProfile(data) {
   if (auth.currentUser == null) {
@@ -58,5 +61,11 @@ export async function fetchUserProfile(data) {
   }
 
   const q = query(doc(db, DB_USERS_NAME, auth.currentUser.uid));
+  return (await getDoc(q)).data();
+}
+
+
+export async function fetchUserFromId(userId) {
+  const q = query(doc(db, DB_USERS_NAME, userId));
   return (await getDoc(q)).data();
 }
