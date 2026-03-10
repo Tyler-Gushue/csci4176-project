@@ -4,7 +4,6 @@ import { View, StyleSheet, Text, Button, TextInput, TouchableOpacity, Platform }
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
 
-
 export function PostScreen() {
   const navigation = useNavigation();
 

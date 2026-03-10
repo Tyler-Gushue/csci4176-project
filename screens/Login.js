@@ -23,7 +23,6 @@ export function Login() {
     // Else, Not logged in
   })
 
-
   const handleLogin = async () => {
 
     if (email == "" || password == "") {
