@@ -4,7 +4,7 @@ import MapView, {Marker} from "react-native-maps";
 import * as Location from "expo-location";
 import { fetchEvents } from "../DbUtil";
 
-
+// Screen to display events on a map
 export function MapScreen(){
     const [region, setRegion] = useState({
         //somewhere Downtown Halifax
@@ -15,11 +15,11 @@ export function MapScreen(){
     });
 
 
-    const [userLocation, setUserLocation] = useState(null);
-    const [selectedEvent, setSelectedEvent] = useState(null);
-    const [events, setEvents] = useState([]);
+    const [userLocation, setUserLocation] = useState(null); // user location
+    const [selectedEvent, setSelectedEvent] = useState(null); // event on marker
+    const [events, setEvents] = useState([]); //events from firebase
 
-
+    //load device location and event data when screen opens
     useEffect(() => {
         async function loadMapData() {
             const { status } = await Location.requestForegroundPermissionsAsync();
@@ -34,7 +34,7 @@ export function MapScreen(){
                     longitudeDelta: 0.05,
                 });
             }
-
+            // fetch events from firebase
             const eventData = await fetchEvents();
             setEvents(eventData.filter((event) => event.latitude != null && event.longitude != null)
             .map((event) => ({
@@ -75,7 +75,7 @@ export function MapScreen(){
                         />
                 ))}
             </MapView>
-
+                //event details card when marker is clicked
                 {selectedEvent && (
                     <View style={styles.eventCard}>
                         <Text style={styles.eventTitle}>{selectedEvent.title}</Text>

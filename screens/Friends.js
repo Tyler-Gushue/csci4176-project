@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { View, StyleSheet, Text, Button, Platform } from 'react-native';
 
-
+//placeholder for social features
 export function FriendsScreen() {
   const navigation = useNavigation();
 

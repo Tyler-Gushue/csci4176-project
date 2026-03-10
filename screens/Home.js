@@ -7,7 +7,7 @@ import { ScrollView, FlatList, Platform } from 'react-native';
 
 import { fetchUserFromId } from "../DbUtil.js";
 
-
+//card toi display post in feed
 function PostCard({ post }) {
   const [username, setUsername] = useState("unknown");
 
@@ -32,6 +32,7 @@ function PostCard({ post }) {
   );
 }
 
+//home screen that displays the post feed
 export function HomeScreen() {
   const navigation = useNavigation();
   const [posts, setPosts] = useState([]);

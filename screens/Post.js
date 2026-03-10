@@ -4,6 +4,7 @@ import { View, StyleSheet, Text, Button, TextInput, TouchableOpacity, Platform }
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
 
+//screen to create new post
 export function PostScreen() {
   const navigation = useNavigation();
 
@@ -18,11 +19,12 @@ export function PostScreen() {
   const descriptionRef = useRef(null);
   const gameRef = useRef(null);
 
-
+  //send to firebase
   const submit = async () => {
     await addPost(name, description, type, location, game);
   }
 
+  //check for empty inputs
   const validateForm = () => {
     const checkField = (ref) => {
       if (ref.current && ref.current.value != null &&  ref.current.value.length == 0) {
@@ -46,6 +48,7 @@ export function PostScreen() {
     //   return;
     // }
 
+    //submit if valid
     submit().then(() => {
       navigation.navigate('Home');
 
@@ -60,7 +63,7 @@ export function PostScreen() {
         <Text style={styles.title}>Make a Post</Text>
         <View style={styles.form}>
 
-
+          //post details about event
           <TextInput
             style={styles.postInput}
             placeholder="Title"
@@ -128,6 +131,7 @@ export function PostScreen() {
             }}
           />
 
+          //submit event
           <TouchableOpacity
             style={styles.button}
             onPress={() => { validateForm(); }}
