@@ -5,6 +5,8 @@ import React, {useState, useEffect} from "react"
 import { fetchPosts } from '../DbUtil.js'
 import { ScrollView, FlatList, Platform } from 'react-native';
 
+
+
 function PostCard({ post }) {
   return (
     <View style={styles.cardView}>

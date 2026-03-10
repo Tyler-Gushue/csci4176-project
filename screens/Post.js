@@ -26,7 +26,7 @@ export function PostScreen() {
 
   const validateForm = () => {
     const checkField = (ref) => {
-      if (ref.current && ref.current.value.length == 0) {
+      if (ref.current && ref.current.value != null &&  ref.current.value.length == 0) {
         ref.current.style.borderColor = '#ff0000';
         ref.current.style.color = '#ff0000';
         return false;
@@ -43,12 +43,12 @@ export function PostScreen() {
       return;
     }
 
-    if (!checkField(gameRef)) {
-      return;
-    }
+    // if (!checkField(gameRef)) {
+    //   return;
+    // }
 
     submit().then(() => {
-      console.log("Post submitted!");
+      navigation.navigate('Home');
 
       setName("");
       setDescription("");
@@ -110,8 +110,8 @@ export function PostScreen() {
           />
 
           <Dropdown
-            style={styles.postInput} 
-            
+            style={styles.postInput}
+
             placeholderStyle={{ color: '#67beff', fontSize: 15 }}
             selectedTextStyle={{ color: '#67beff', fontSize: 15 }}
 
@@ -119,7 +119,7 @@ export function PostScreen() {
               { label: 'Online', value: 'Online' },
               { label: 'In-person', value: 'In-person' }
             ]}
-            
+
             labelField="label"
             valueField="value"
             placeholder="Select Location"
@@ -130,10 +130,10 @@ export function PostScreen() {
           />
 
           <TouchableOpacity
-            style={styles.loginButton}
+            style={styles.button}
             onPress={() => { validateForm(); }}
           >
-            <Text style={styles.loginText}>Post</Text>
+            <Text style={styles.buttonText}>Post</Text>
           </TouchableOpacity>
 
         </View>
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   cardView: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#cfe2f3',
+    backgroundColor: '#fff',
     padding: 20,
     margin: 10,
     marginTop: (Platform.OS != 'web') ? '15%' : '',
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10
   },
-  loginButton: {
+  button: {
     backgroundColor: '#67beff',
     alignItems: 'center',
     width: '100%',
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
     marginTop: 15,
     padding: 5,
   },
-  loginText: {
+  buttonText: {
     fontSize: 15,
-    color: '#cfe2f3'
+    color: '#fff'
   },
 });

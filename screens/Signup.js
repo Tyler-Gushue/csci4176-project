@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     width: '75%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#cfe2f3',
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#67beff',
     borderRadius: 10,
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
 
   signUpInput: {
     color: '#67beff',
-    backgroundColor: '#cfe2f3',
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#67beff',
     width: '100%',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
 
   signUpText: {
     fontSize: 15,
-    color: '#cfe2f3'
+    color: '#fff'
   },
 
   loginText: {

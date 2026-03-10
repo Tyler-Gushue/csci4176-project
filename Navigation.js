@@ -20,7 +20,7 @@ export function NavBar() {
   return (
     <Tab.Navigator screenOptions={{
       headerShown: false,
-      tabBarActiveTintColor: '#cfe2f3',
+      tabBarActiveTintColor: '#fff',
       tabBarInactiveTintColor: '#b4dafb',
       tabBarStyle: {
         backgroundColor: '#67beff',
