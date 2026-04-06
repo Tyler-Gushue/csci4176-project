@@ -1,6 +1,6 @@
 
 import { db, auth } from './screens/firebaseConfig.js';
-import { doc, addDoc, getDoc, getDocs, query, collection } from "firebase/firestore";
+import { doc, addDoc, getDoc, getDocs, query, collection, updateDoc, arrayUnion } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DB_POSTS_NAME = "posts"
@@ -10,7 +10,10 @@ const DB_EVENTS_NAME = "events";
 export async function fetchPosts() {
   const q = query(collection(db, DB_POSTS_NAME));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((v) => v.data());
+  return snapshot.docs.map((docSnap) => ({
+    id: docSnap.id,
+    ...docSnap.data(),
+  }));
 }
 
 export async function addPost(title, description, type, location, game) {
@@ -27,6 +30,19 @@ export async function addPost(title, description, type, location, game) {
     ownerID: userID,
     pendingParticipants: [],
     acceptedParticipants: []
+  });
+}
+
+export async function applyToPost(postId){
+  const userID = await AsyncStorage.getItem('userID');
+
+  if(!userID){
+    return;
+  }
+
+  const postRef = doc(db, DB_POSTS_NAME, postId);
+  await updateDoc(postRef, {
+    pendingParticipants: arrayUnion(userID),
   });
 }
 
