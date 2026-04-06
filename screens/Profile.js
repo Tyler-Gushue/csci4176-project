@@ -20,9 +20,11 @@ export function ProfileScreen() {
   // Fetch the user's profile information
   const [profileData, setProfileData] = useState(null);
 
-  fetchUserProfile().then((data) => {
-    setProfileData(data);
-  });
+  useEffect(() => {
+    fetchUserProfile().then((data) => {
+      setProfileData(data);
+    });
+  }, []);
 
   /**
    * Prompts user with options when changing profile photo
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     margin: 10,
-    marginTop: (Platform.OS != 'web') ? '15%' : '',
+    marginTop: (Platform.OS != 'web') ? '15%' : 0,
     borderRadius: 10,
   },
   title: {

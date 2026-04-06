@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import React, {useState, useRef} from 'react';
-import { View, StyleSheet, Text, Button, TextInput, TouchableOpacity, Platform } from 'react-native';
+import React, {useState} from 'react';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
 
@@ -14,48 +14,26 @@ export function PostScreen() {
   const [type, setType] = useState("");
   const [location, setLocation] = useState("");
 
-
-  const titleRef = useRef(null);
-  const descriptionRef = useRef(null);
-  const gameRef = useRef(null);
-
   //send to firebase
   const submit = async () => {
     await addPost(name, description, type, location, game);
-  }
+  };
 
   //check for empty inputs
   const validateForm = () => {
-    const checkField = (ref) => {
-      if (ref.current && ref.current.value != null &&  ref.current.value.length == 0) {
-        ref.current.style.borderColor = '#ff0000';
-        ref.current.style.color = '#ff0000';
-        return false;
-      }
-
-      return true;
-    }
-
-    if (!checkField(titleRef)) {
+    if(name.trim() === "" || description.trim() === ""){
       return;
     }
 
-    if (!checkField(descriptionRef)) {
-      return;
-    }
-
-    // if (!checkField(gameRef)) {
-    //   return;
-    // }
-
-    //submit if valid
     submit().then(() => {
       navigation.navigate('Home');
-
       setName("");
-      setDescription("");
+      setDescription("")
+      setGame("");
+      setType("");
+      setLocation("");
     });
-  }
+  };
 
   return (
     <View style={ styles.container }>
@@ -63,12 +41,10 @@ export function PostScreen() {
         <Text style={styles.title}>Make a Post</Text>
         <View style={styles.form}>
 
-          //post details about event
           <TextInput
             style={styles.postInput}
             placeholder="Title"
             placeholderTextColor="#67beff"
-            ref={ titleRef }
             value={ name }
             onChangeText={ setName }
           />
@@ -77,7 +53,6 @@ export function PostScreen() {
             style={styles.postInput}
             placeholder="Description"
             placeholderTextColor="#67beff"
-            ref={ descriptionRef }
             value={ description }
             onChangeText={ setDescription }
           />
@@ -86,7 +61,6 @@ export function PostScreen() {
             style={styles.postInput}
             placeholder="Game"
             placeholderTextColor="#67beff"
-            ref={ gameRef }
             value={ game }
             onChangeText={ setGame }
           />
@@ -131,10 +105,9 @@ export function PostScreen() {
             }}
           />
 
-          //submit event
           <TouchableOpacity
             style={styles.button}
-            onPress={() => { validateForm(); }}
+            onPress={validateForm}
           >
             <Text style={styles.buttonText}>Post</Text>
           </TouchableOpacity>
@@ -156,7 +129,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
     margin: 10,
-    marginTop: (Platform.OS != 'web') ? '15%' : '',
+    marginTop: (Platform.OS != 'web') ? '15%' : 0,
     borderRadius: 10,
   },
   title: {

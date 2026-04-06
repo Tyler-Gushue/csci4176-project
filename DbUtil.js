@@ -1,20 +1,19 @@
 
-import { db } from './screens/firebaseConfig.js';
-
-import { doc, setDoc, addDoc, getDoc, getDocs, query, collection } from "firebase/firestore";
-import { ref, push } from "firebase/database";
-import { auth } from './screens/firebaseConfig.js';
-
+import { db, auth } from './screens/firebaseConfig.js';
+import { doc, addDoc, getDoc, getDocs, query, collection, updateDoc, arrayUnion } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const DB_POSTS_NAME = "posts"
 const DB_USERS_NAME = "users"
-
 const DB_EVENTS_NAME = "events";
 
 export async function fetchPosts() {
   const q = query(collection(db, DB_POSTS_NAME));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((v) => v.data());
+  return snapshot.docs.map((docSnap) => ({
+    id: docSnap.id,
+    ...docSnap.data(),
+  }));
 }
 
 /**
@@ -43,10 +42,19 @@ export async function addPost(title, description, type, location, game) {
   });
 }
 
-/**
- * function for getting all events
- * @returns 
- */
+export async function applyToPost(postId){
+  const userID = await AsyncStorage.getItem('userID');
+
+  if(!userID){
+    return;
+  }
+
+  const postRef = doc(db, DB_POSTS_NAME, postId);
+  await updateDoc(postRef, {
+    pendingParticipants: arrayUnion(userID),
+  });
+}
+
 export async function fetchEvents() {
   const q = query(collection(db, DB_EVENTS_NAME));
   const snapshot = await getDocs(q);
@@ -73,7 +81,7 @@ export async function addEvent(event){
  * User helpers
  */
 
-export async function fetchUserProfile(data) {
+export async function fetchUserProfile() {
   if (auth.currentUser == null) {
     return null;
   }

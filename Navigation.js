@@ -9,6 +9,7 @@ import { MapScreen } from './screens/Map.js'
 import { Login } from './screens/Login.js'
 import { Signup } from './screens/Signup.js'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { PostDetailsScreen } from './screens/PostDetails.js';
 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -98,6 +99,11 @@ export const NavigationRoutes = createNativeStackNavigator({
     Map: {
       screen: MapScreen,
       options: { headerShown: false }
+    },
+
+    PostDetails:{
+      screen: PostDetailsScreen,
+      options: { headerShown: false}
     }
   },
 });
