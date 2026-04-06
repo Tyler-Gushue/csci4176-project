@@ -60,9 +60,6 @@ export function HomeScreen() {
       renderItem={({ item }) => <PostCard post={item} />}
       style={topPaddingStyle}
     />
-    // <ScrollView>
-    //   {posts}
-    // </ScrollView>
   );
 };
 

@@ -21,7 +21,7 @@ export function Login() {
         navigation.navigate('Home');
       }
     });
-    return ccheck;
+    return check;
   }, []);
 
   const handleLogin = async () => {

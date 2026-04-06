@@ -1,5 +1,5 @@
 
-import { db, auth } from './firebaseConfig.js';
+import { db, auth } from './screens/firebaseConfig.js';
 import { doc, addDoc, getDoc, getDocs, query, collection } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

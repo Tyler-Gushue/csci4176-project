@@ -75,7 +75,6 @@ export function MapScreen(){
                         />
                 ))}
             </MapView>
-                //event details card when marker is clicked
                 {selectedEvent && (
                     <View style={styles.eventCard}>
                         <Text style={styles.eventTitle}>{selectedEvent.title}</Text>
