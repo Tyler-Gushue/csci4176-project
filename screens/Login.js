@@ -79,7 +79,7 @@ export function Login() {
                   style={styles.loginButton}
                   onPress={handleLogin}
                 >
-                    <Text style={styles.loginText}>Login</Text>
+                  <Text style={styles.loginText}>Login</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => navigation.navigate('Signup')}
