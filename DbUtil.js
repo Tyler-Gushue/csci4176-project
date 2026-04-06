@@ -42,16 +42,24 @@ export async function addPost(title, description, type, location, game) {
   });
 }
 
-export async function applyToPost(postId){
+export async function applyToPost(postId, message){
   const userID = await AsyncStorage.getItem('userID');
-
   if(!userID){
     return;
   }
 
+  const userSnap = await getDoc(doc(db, DB_USERS_NAME, userID));
+  const userData = userSnap.data();
+  const application = {
+    userId: userID,
+    username: userData?.username || "Unknown",
+    profileImage: userData?.profileImage || null,
+    message: message,
+  };
+
   const postRef = doc(db, DB_POSTS_NAME, postId);
   await updateDoc(postRef, {
-    pendingParticipants: arrayUnion(userID),
+    pendingParticipants: arrayUnion(application),
   });
 }
 

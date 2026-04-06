@@ -1,13 +1,15 @@
-import React from "react";
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
+import React, { useState } from "react";
+import {View, Text, StyleSheet, TouchableOpacity, TextInput} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { applyToPost } from "../DbUtil";
 
 export function PostDetailsScreen({route}){
     const navigation = useNavigation();
     const{post} = route.params;
+    const [message, setMessage] = useState("");
     const doApply = async () => {
-        await applyToPost(post.id);
+        await applyToPost(post.id, message);
+        setMessage("");
     };
 
     return(
@@ -22,6 +24,14 @@ export function PostDetailsScreen({route}){
                 <Text style={styles.text}>Game: {post.game}</Text>
                 <Text style={styles.text}>Type: {post.type}</Text>
                 <Text style={styles.text}>Location: {post.location}</Text>
+
+                <TextInput style={styles.input} 
+                placeholder="Why do you want to apply?" 
+                placeholderTextColor="#67beff"
+                value={message}
+                onChangeText={setMessage}
+                ></TextInput>
+
                 <TouchableOpacity style={styles.button}
                 onPress={doApply}>
                     <Text style={styles.buttonText}>Apply</Text>
@@ -69,5 +79,14 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 15,
         color: "#fff",
+    },
+
+    input:{
+        borderWidth: 1,
+        borderColor: "#67beff",
+        borderRadius: 10,
+        color: "#67b3ff",
+        padding: 10,
+        marginBottom: 15,
     },
 });
