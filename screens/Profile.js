@@ -2,27 +2,27 @@ import React, {useState, useEffect, useRef} from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { View, StyleSheet, Text, Button, Image, TouchableOpacity, Platform } from 'react-native';
 import { Camera } from 'expo-camera';
-import { shareAsync } from 'expo-sharing';
-import * as MediaLibrary from 'expo-media-library';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth, signOut } from "firebase/auth";
 
 import { fetchUserProfile } from '../DbUtil';
 
 
 export function ProfileScreen() {
   const [image, setImage] = useState(require('../Images/NoProfileImg.webp'));
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [showChangeUsername, setShowChangeUsername] = useState(false);
+  const [showChangeEmail, setShowChangeEmail] = useState(false);
 
   const navigation = useNavigation();
   let cameraRef = useRef();
 
   // Fetch the user's profile information
   const [profileData, setProfileData] = useState(null);
-
-  fetchUserProfile().then((data) => {
-    setProfileData(data);
-  });
 
   /**
    * Prompts user with options when changing profile photo
@@ -65,16 +65,134 @@ export function ProfileScreen() {
       allowsEditing: true,
     });
 
-    setImage({ uri: result.assets[0].uri }); // sets pfp to picture taken
+    if (!result.canceled) {
+        setImage({ uri: result.assets[0].uri });
+    }
 
   }
 
   /**
    * Function that will be used for uploading a photo from library for pfp
    */
-  const uploadPhoto = () => {
+  const uploadPhoto = async () => {
 
-  }
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+
+        Alert.alert(
+          "Permission Denied",
+          "Library access is required."
+        )
+        return;
+
+      }
+
+      let result = await ImagePicker.launchImageLibraryAsync({
+
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+        allowsEditing: true, 
+        aspect: [1, 1],
+        quality: 1,
+
+      });
+
+      if (!result.canceled) {
+        setImage({ uri: result.assets[0].uri });
+      }
+  };
+
+  const uploadToCloudinary = async (uri) => {
+
+    const cloudName = 'dliyhndog';
+    const uploadPreset = 'csci4177-project'; // The name you chose in Step 1
+    const apiUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+    try {
+
+      const data = new FormData();
+      data.append('file', {
+        uri: uri,
+        type: 'image/jpeg',
+        name: 'profile_picture.jpg',
+      });
+      data.append('upload_preset', uploadPreset);
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        body: data,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const result = await response.json();
+      
+      if (result.secure_url) {
+        const imageUrl = result.secure_url;
+        console.log("Cloudinary URL:", imageUrl);
+
+        const userId = await AsyncStorage.getItem('userID');
+        const db = getFirestore();
+        const userDocRef = doc(db, "users", userId);
+        
+        await updateDoc(userDocRef, {
+          pfp: imageUrl
+        });
+
+        Alert.alert(
+          "Success", 
+          "Profile picture updated!"
+        );
+
+      } else {
+
+        throw new Error("Failed to get URL from Cloudinary");
+
+      }
+
+    } catch (error) {
+
+      console.error("Cloudinary Upload Error:", error);
+      Alert.alert("Upload Error", "Could not save image to cloud.");
+
+    }
+  };
+
+  const logout = async () => {
+
+    try {
+
+      const auth = getAuth();
+      
+      await signOut(auth);
+
+      await AsyncStorage.clear();
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+
+    } catch (error) {
+      console.error("Error during logout:", error);
+      Alert.alert("Logout Failed", "Something went wrong.");
+    }
+
+  };
+
+  useEffect(() => {
+    if (image.uri) {
+      uploadToCloudinary(image.uri);
+    }
+  }, [image]);
+
+  useEffect(() => {
+    fetchUserProfile().then((data) => {
+      setProfileData(data);
+    });
+  }, []);
 
   return (
     <View style={ styles.container }>
@@ -86,7 +204,7 @@ export function ProfileScreen() {
           >
             <Image
               style={ styles.profileImage }
-              source={image}
+              source={(profileData != null) ? { uri: profileData.pfp } : image}
             />
             <View style={ styles.editIconContainer }>
               <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
@@ -96,21 +214,31 @@ export function ProfileScreen() {
         <Text style={styles.settingsText}>{ (profileData != null) ? profileData.username : 'Username' }</Text>
           <Text style={ styles.settingsText }>{ (profileData != null) ? profileData.email : 'Email' }</Text>
           <View style={ styles.settings}>
-            <View style={ styles.settingsRow }>
-              <Text style={ styles.settingsText }>Change Password</Text>
-              <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
-            </View>
-            <View style={ styles.settingsRow }>
-              <Text style={ styles.settingsText }>Change Email</Text>
-              <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
-            </View>
-            <View style={ styles.settingsRow }>
-              <Text style={ styles.settingsText }>Change Username</Text>
-              <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
-            </View>
+            <TouchableOpacity
+              style={ styles.button }
+              onPress={logout}
+            >
+              <Text style={ styles.buttonText }>Change Password</Text>
+              <Text style={ styles.buttonArrow }>></Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={ styles.button }
+              onPress={logout}
+            >
+              <Text style={ styles.buttonText }>Change Email</Text>
+              <Text style={ styles.buttonArrow }>></Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={ styles.button }
+              onPress={logout}
+            >
+              <Text style={ styles.buttonText }>Change Username</Text>
+              <Text style={ styles.buttonArrow }>></Text>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity
-            style={ styles.button }
+            style={ styles.logoutButton }
+            onPress={logout}
           >
               <Text style={ styles.buttonText }>Log Out</Text>
           </TouchableOpacity>
@@ -177,6 +305,24 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   button: {
+    flexDirection: 'row',
+    backgroundColor: '#67beff',
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#67beff',
+    borderRadius: 10,
+    padding: 12,
+  },
+  buttonText: {
+    fontSize: 15,
+    color: '#fff'
+  },
+  buttonArrow: {
+    fontSize: 15,
+    color: '#fff',
+    marginLeft: 'auto'
+  },
+  logoutButton: {
     backgroundColor: '#67beff',
     alignItems: 'center',
     width: '90%',
@@ -184,10 +330,7 @@ const styles = StyleSheet.create({
     borderColor: '#67beff',
     borderRadius: 10,
     margin: 20,
-    padding: 5,
-  },
-  buttonText: {
-    fontSize: 15,
-    color: '#fff'
+    marginTop: 'auto',
+    padding: 12,
   },
 });
