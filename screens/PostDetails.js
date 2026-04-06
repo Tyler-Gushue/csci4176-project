@@ -10,6 +10,7 @@ export function PostDetailsScreen({route}){
     const [postData, setPostData] = useState(post);
     const [message, setMessage] = useState("");
     const [applications, setApplications] = useState(post.pendingParticipants || []);
+    const [acceptedApplications, setAcceptedApplications] = useState(post.acceptedParticipants || []);
     const [currentUserId, setCurrentUserId] = useState(null);
     const doApply = async () => {
         const newApplication = await applyToPost(post.id, message);
@@ -23,6 +24,7 @@ export function PostDetailsScreen({route}){
     const doAccept = async (application) => {
         await acceptParticipant(post.id, application);
         setApplications((prev) => prev.filter((app) => app !== application));
+        setAcceptedApplications((prev) => [...prev, application]);
     };
 
     const doDecline = async (application) => {
@@ -44,6 +46,7 @@ export function PostDetailsScreen({route}){
             if(freshPost){
                 setPostData(freshPost);
                 setApplications(freshPost.pendingParticipants || []);
+                setAcceptedApplications(freshPost.acceptedParticipants || []);
             }
         };
         loadPost();
@@ -106,6 +109,24 @@ export function PostDetailsScreen({route}){
                         )}
                         </View>
                     ))}
+                    </>
+                )}
+
+                {acceptedApplications.length > 0 && (
+                    <>
+                        <Text style={styles.title}>Confirmed Players</Text>
+                        {acceptedApplications.map((app, index) => (
+                            <View key={index} style={styles.applicationCard}>
+                                <Image
+                                    style={styles.profileImage}
+                                    source={
+                                        app.profileImage ? {uri: app.profileImage} : require("../Images/NoProfileImg.webp")
+                                    }
+                                />
+                                <Text style={styles.text}>User: {app.username || app.userId}</Text>
+                                <Text style={styles.text}>Message: {app.message || "No message written"}</Text>
+                            </View>
+                        ))}
                     </>
                 )}
             </View>
