@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text, TextInput, Button, FlatList, TouchableOpacity, Alert} from 'react-native';
+import {View, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
 import { useNavigation } from "@react-navigation/native";
-import { browserSessionPersistence, getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,13 +15,14 @@ export function Login() {
   const navigation = useNavigation();
 
   // Check if the user is already logged in and redirect if true
-  auth.onAuthStateChanged((user) => {
-    if (user != null) {
-      navigation.navigate('Home');
-    }
-
-    // Else, Not logged in
-  })
+  useEffect(() => {
+    const check = auth.onAuthStateChanged((user) => {
+      if(user != null){
+        navigation.navigate('Home');
+      }
+    });
+    return ccheck;
+  }, []);
 
   const handleLogin = async () => {
 

@@ -1,14 +1,10 @@
 
-import { db } from './screens/firebaseConfig.js';
-
-import { doc, setDoc, addDoc, getDoc, getDocs, query, collection } from "firebase/firestore";
-import { ref, push } from "firebase/database";
-import { auth } from './screens/firebaseConfig.js';
-
+import { db, auth } from './firebaseConfig.js';
+import { doc, addDoc, getDoc, getDocs, query, collection } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const DB_POSTS_NAME = "posts"
 const DB_USERS_NAME = "users"
-
 const DB_EVENTS_NAME = "events";
 
 export async function fetchPosts() {
@@ -55,7 +51,7 @@ export async function addEvent(event){
  * User helpers
  */
 
-export async function fetchUserProfile(data) {
+export async function fetchUserProfile() {
   if (auth.currentUser == null) {
     return null;
   }

@@ -7,13 +7,17 @@ import { ScrollView, FlatList, Platform } from 'react-native';
 
 import { fetchUserFromId } from "../DbUtil.js";
 
-//card toi display post in feed
+//card to display post in feed
 function PostCard({ post }) {
   const [username, setUsername] = useState("unknown");
-
-  fetchUserFromId(post.ownerID).then((data) => {
-    setUsername(data.username);
-  });
+  
+  useEffect(() => {
+    fetchUserFromId(post.ownerID).then((data) => {
+      if(data && data.username){
+        setUsername(data.username);
+      }
+    });
+  }, [post.ownerID]);
 
   const date = new Date(post.createdAt);
 
@@ -40,8 +44,8 @@ export function HomeScreen() {
   useEffect(() => {
     fetchPosts().then((data) => {
        setPosts(data.map((v) => v));
-    })
-  });
+    });
+  }, []);
 
   let topPaddingStyle = {};
   if (Platform.OS != 'web') {
@@ -71,7 +75,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 600,
+    fontWeight: "600",
   },
   username: {
     paddingTop: 2,
@@ -81,13 +85,13 @@ const styles = StyleSheet.create({
   description: {
     paddingTop: 10,
     fontSize: 16,
-    fontWeight: 500
+    fontWeight: "500"
   },
   gameEntry: {
     flex: 1,
     fontSize: 18,
     padding: 5,
-    fontWeight: 600,
+    fontWeight: "600",
     textAlign: 'left',
     color: 'gray',
     textAlign: 'center'

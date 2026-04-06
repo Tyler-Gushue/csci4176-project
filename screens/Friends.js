@@ -1,12 +1,7 @@
-import { useNavigation } from "@react-navigation/native";
-
-
-import { View, StyleSheet, Text, Button, Platform } from 'react-native';
+import { View, StyleSheet, Text, Platform } from 'react-native';
 
 //placeholder for social features
 export function FriendsScreen() {
-  const navigation = useNavigation();
-
   return (
     <View style={ styles.cardView }>
       <Text style={styles.title}>Friends</Text>
@@ -19,11 +14,11 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     margin: 10,
-    marginTop: (Platform.OS != 'web') ? '15%' : '',
+    marginTop: (Platform.OS != 'web') ? '15%' : 0,
     borderRadius: 10
   },
   title: {
     fontSize: 20,
-    fontWeight: 650,
+    fontWeight: "700",
   },
 });
