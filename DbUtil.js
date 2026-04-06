@@ -1,6 +1,6 @@
 
 import { db, auth } from './screens/firebaseConfig.js';
-import { doc, addDoc, getDoc, getDocs, query, collection, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, addDoc, getDoc, getDocs, query, collection, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DB_POSTS_NAME = "posts"
@@ -42,18 +42,52 @@ export async function addPost(title, description, type, location, game) {
   });
 }
 
-export async function applyToPost(postId){
+export async function applyToPost(postId, message){
   const userID = await AsyncStorage.getItem('userID');
-
   if(!userID){
     return;
   }
 
+  const userSnap = await getDoc(doc(db, DB_USERS_NAME, userID));
+  const userData = userSnap.data();
+  const application = {
+    userId: userID,
+    username: userData?.username || "Unknown",
+    profileImage: userData?.profileImage || null,
+    message: message,
+  };
+
   const postRef = doc(db, DB_POSTS_NAME, postId);
   await updateDoc(postRef, {
-    pendingParticipants: arrayUnion(userID),
+    pendingParticipants: arrayUnion(application),
   });
+
+  return application;
 }
+
+export async function acceptParticipant(postId, application){
+    const postRef = doc(db, DB_POSTS_NAME, postId);
+    const postSnap = await getDoc(postRef);
+    const postData = postSnap.data();
+    const updatePending = (postData.pendingParticipants || []).filter((app) => app.userId !== application.userId);
+    const updateAccepted = [...(postData.acceptedParticipants || []), application];
+
+    await updateDoc(postRef, {
+      pendingParticipants: updatePending,
+      acceptedParticipants: updateAccepted,
+    });
+  }
+
+export async function declineParticipant(postId, application){
+    const postRef = doc(db, DB_POSTS_NAME, postId);
+    const postSnap = await getDoc(postRef);
+    const postData = postSnap.data();
+    const updatePending = (postData.pendingParticipants || []).filter((app) => app.userId !== application.userId);
+
+    await updateDoc(postRef, {
+      pendingParticipants: updatePending,
+    });
+  }
 
 export async function fetchEvents() {
   const q = query(collection(db, DB_EVENTS_NAME));
@@ -62,6 +96,20 @@ export async function fetchEvents() {
     id: doc.id,
     ...doc.data(),
   }));
+}
+
+export async function fetchPostById(postId){
+  const postRef = doc(db, DB_POSTS_NAME, postId);
+  const postSnap = await getDoc(postRef);
+
+  if(!postSnap.exists()){
+    return null;
+  }
+
+  return{
+    id:postSnap.id,
+    ...postSnap.data(),
+  };
 }
 
 /**
