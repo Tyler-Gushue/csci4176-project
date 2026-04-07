@@ -18,18 +18,32 @@ export function ProfileScreen() {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showChangeUsername, setShowChangeUsername] = useState(false);
   const [showDeleteAccount, setDeleteAccount] = useState(false);
+  const [error, setError] = useState("");
 
   const [newUsername, setNewUsername] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [email, setEmail] = useState("");
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{6,}$/;
 
   const navigation = useNavigation();
   let cameraRef = useRef();
 
+  const [userId, setUserId] = useState("");
+
   const [profileData, setProfileData] = useState(null);
+
+  const getUserId = async () => {
+
+    const id = await AsyncStorage.getItem('userID');
+
+    if (id) {
+
+      setUserId(id);
+
+    }
+
+  }
 
   /**
    * Prompts user with options when changing profile photo
@@ -139,7 +153,6 @@ export function ProfileScreen() {
       if (result.secure_url) {
         const imageUrl = result.secure_url;
 
-        const userId = await AsyncStorage.getItem('userID');
         const userDocRef = doc(db, "users", userId);
         
         await updateDoc(userDocRef, {
@@ -206,12 +219,37 @@ export function ProfileScreen() {
       "Account Deletion",
       "You will lose all data connected to this account.  Do you wish to continue with the deletion?",
       [
-        { text: "Confirm", onPress: () => console.log("Canceled")},
+        { text: "Confirm", onPress: handleDelete},
         { text: "Cancel", onPress: () => console.log("Canceled")}
       ]
     )
 
   }
+
+  const handleDelete = async () => {
+
+    const user = auth.currentUser;
+
+    try {
+
+      const credential = EmailAuthProvider.credential(user.email, password);
+      await reauthenticateWithCredential(user, credential);
+      
+      await updateDoc(doc(db, "users", userId), {
+        is_deleted: true
+      });
+
+      await logout();
+
+
+    } catch (error) {
+
+      console.error("Delete failed:", error);
+      Alert.alert("Error", "Could not deactivate account.");
+
+    }
+
+  };
 
   const handleUpdateUsername = async () => {
 
@@ -223,8 +261,6 @@ export function ProfileScreen() {
     }
 
     try {
-
-      const userId = await AsyncStorage.getItem('userID');
 
       await updateDoc(doc(db, "users", userId), {
         username: newUsername
@@ -287,9 +323,7 @@ export function ProfileScreen() {
       setNewPassword("");
       setConfirmPassword("");
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
       console.error(error);
 
@@ -319,6 +353,12 @@ export function ProfileScreen() {
     });
   }, [image]);
 
+  useEffect( () => {
+
+    getUserId();
+
+  }, [])
+
   return (
     <View style={ styles.container }>
       <View style={ styles.cardView }>
@@ -329,7 +369,7 @@ export function ProfileScreen() {
           >
             <Image
               style={ styles.profileImage }
-              source={(profileData != null) ? { uri: profileData.pfp } : image}
+              source={(profileData != null && profileData.pfp != null) ? { uri: profileData.pfp } : image}
             />
             <View style={ styles.editIconContainer }>
               <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
@@ -363,6 +403,13 @@ export function ProfileScreen() {
                   <Text style={ styles.buttonArrow }>&gt;</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  style={ styles.button }
+                  onPress={logoutPrompt}
+                >
+                    <Text style={ styles.buttonText }>Log Out</Text>
+                    <Text style={ styles.buttonArrow }>&gt;</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                   style={ styles.buttonDelete }
                   onPress={ () => {
                     setDeleteAccount(true);
@@ -373,12 +420,6 @@ export function ProfileScreen() {
                   <Text style={ styles.buttonArrow }>&gt;</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={ styles.logoutButton }
-                onPress={logoutPrompt}
-              >
-                  <Text style={ styles.buttonText }>Log Out</Text>
-              </TouchableOpacity>
             </>
           )}
           {showChangePassword && (
@@ -458,11 +499,10 @@ export function ProfileScreen() {
                 <Text style={styles.inputHeader }>Delete Account</Text>
                 <TextInput
                   style={[ styles.textInput, styles.inputText ]}
-                  placeholder="Email"
-                />
-                <TextInput
-                  style={[ styles.textInput, styles.inputText ]}
-                  placeholder="Password"
+                  placeholder="Current Password"
+                  secureTextEntry={true}
+                  value={password}
+                  onChangeText={setPassword}
                 />
                 <TouchableOpacity
                   style={styles.buttonDelete}
@@ -475,7 +515,6 @@ export function ProfileScreen() {
                   onPress={ () => {
                     setDeleteAccount(false);
                     setShowButtons(true);
-                    setEmail("");
                     setPassword("");
                   }}
                 >
