@@ -1,5 +1,4 @@
 import { useNavigation } from "@react-navigation/native";
-<<<<<<< HEAD
 import * as Location from 'expo-location';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from "react-native-maps";
@@ -83,7 +82,6 @@ export function PostScreen() {
     });
   };
 
-<<<<<<< HEAD
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
