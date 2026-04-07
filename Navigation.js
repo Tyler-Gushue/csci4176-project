@@ -11,6 +11,7 @@ import { Signup } from './screens/Signup.js'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { PostDetailsScreen } from './screens/PostDetails.js';
 import { MyPostsScreen } from './screens/MyPosts.js';
+import { ConfirmedPostsScreen } from './screens/ConfirmedPosts.js';
 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -109,6 +110,11 @@ export const NavigationRoutes = createNativeStackNavigator({
 
     MyPosts:{
       screen: MyPostsScreen,
+      options: { headerShown: false}
+    },
+
+    ConfirmedPosts:{
+      screen: ConfirmedPostsScreen,
       options: { headerShown: false}
     }
   },
