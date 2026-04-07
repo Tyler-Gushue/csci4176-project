@@ -16,7 +16,6 @@ export function ProfileScreen() {
   const [image, setImage] = useState(require('../Images/NoProfileImg.webp'));
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showChangeUsername, setShowChangeUsername] = useState(false);
-<<<<<<< HEAD
   const [showDeleteAccount, setDeleteAccount] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,19 +24,12 @@ export function ProfileScreen() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{6,}$/;
-=======
-  const [showChangeEmail, setShowChangeEmail] = useState(false);
->>>>>>> dax
 
   const navigation = useNavigation();
   let cameraRef = useRef();
 
-<<<<<<< HEAD
   const [userId, setUserId] = useState("");
 
-=======
-  // Fetch the user's profile information
->>>>>>> dax
   const [profileData, setProfileData] = useState(null);
 
   const getUserId = async () => {
