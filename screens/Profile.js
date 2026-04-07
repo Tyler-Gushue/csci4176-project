@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useNavigation } from "@react-navigation/native";
-import { View, StyleSheet, Text, Button, TextInput, Image, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, Text, Button, Image, TouchableOpacity, Platform } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -14,13 +14,14 @@ import { fetchUserProfile } from '../DbUtil';
 
 export function ProfileScreen() {
   const [image, setImage] = useState(require('../Images/NoProfileImg.webp'));
-  const [showButtons, setShowButtons] = useState(true);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showChangeUsername, setShowChangeUsername] = useState(false);
+  const [showChangeEmail, setShowChangeEmail] = useState(false);
 
   const navigation = useNavigation();
   let cameraRef = useRef();
 
+  // Fetch the user's profile information
   const [profileData, setProfileData] = useState(null);
 
   /**
@@ -104,7 +105,7 @@ export function ProfileScreen() {
   const uploadToCloudinary = async (uri) => {
 
     const cloudName = 'dliyhndog';
-    const uploadPreset = 'csci4177-project';
+    const uploadPreset = 'csci4177-project'; // The name you chose in Step 1
     const apiUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     try {
@@ -159,19 +160,6 @@ export function ProfileScreen() {
     }
   };
 
-  const logoutPrompt = () => {
-
-    Alert.alert(
-      "Log out",
-      "Are you sure you want to logout?",
-      [
-        { text: "Confirm", onPress: logout},
-        { text: "Cancel", onPress: () => console.log("Canceled")}
-      ]
-    )
-
-  }
-
   const logout = async () => {
 
     try {
@@ -204,7 +192,7 @@ export function ProfileScreen() {
     fetchUserProfile().then((data) => {
       setProfileData(data);
     });
-  }, [image]);
+  }, []);
 
   return (
     <View style={ styles.container }>
@@ -224,97 +212,36 @@ export function ProfileScreen() {
           </TouchableOpacity>
         </View>
         <Text style={styles.settingsText}>{ (profileData != null) ? profileData.username : 'Username' }</Text>
-        <Text style={ styles.settingsText }>{ (profileData != null) ? profileData.email : 'Email' }</Text>
-          {showButtons && (
-            <>
-              <View style={ styles.settings}>
-                <TouchableOpacity
-                  style={ styles.button }
-                  onPress={ () => {
-                    setShowChangeUsername(true);
-                    setShowButtons(false);
-                  }}
-                >
-                  <Text style={ styles.buttonText }>Change Username</Text>
-                  <Text style={ styles.buttonArrow }>&gt;</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={ styles.button }
-                  onPress={ () => {
-                    setShowChangePassword(true);
-                    setShowButtons(false);
-                  }}
-                >
-                  <Text style={ styles.buttonText }>Change Password</Text>
-                  <Text style={ styles.buttonArrow }>&gt;</Text>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={ styles.logoutButton }
-                onPress={logoutPrompt}
-              >
-                  <Text style={ styles.buttonText }>Log Out</Text>
-              </TouchableOpacity>
-            </>
-          )}
-          {showChangePassword && (
-            <View style={ styles.settings}>
-                <Text style={styles.inputHeader }>Change Password</Text>
-                <TextInput
-                  style={[ styles.textInput, styles.inputText ]}
-                  placeholder="Current Password"
-                />
-                <TextInput
-                  style={[ styles.textInput, styles.inputText ]}
-                  placeholder="New Password"
-                />
-                <TextInput
-                  style={[ styles.textInput, styles.inputText ]}
-                  placeholder="Confirm Password"
-                />
-                <TouchableOpacity
-                  style={styles.button}
-                >
-                  <Text style={styles.buttonText}>Update</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.buttonCancel}
-                  onPress={ () => {
-                    setShowChangePassword(false);
-                    setShowButtons(true);
-                  }}
-                >
-                  <Text style={styles.buttonText}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
-          )}
-          {showChangeUsername && (
-              <View style={ styles.settings}>
-                <Text style={styles.inputHeader }>Change Username</Text>
-                <TextInput
-                  style={[ styles.textInput, styles.inputText ]}
-                  placeholder="New Username"
-                />
-                <TextInput
-                  style={[ styles.textInput, styles.inputText ]}
-                  placeholder="Password"
-                />
-                <TouchableOpacity
-                  style={styles.button}
-                >
-                <Text style={styles.buttonText}>Update</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.buttonCancel}
-                  onPress={ () => {
-                    setShowChangeUsername(false);
-                    setShowButtons(true);
-                  }}
-                >
-                  <Text style={styles.buttonText}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
-          )}
+          <Text style={ styles.settingsText }>{ (profileData != null) ? profileData.email : 'Email' }</Text>
+          <View style={ styles.settings}>
+            <TouchableOpacity
+              style={ styles.button }
+              onPress={logout}
+            >
+              <Text style={ styles.buttonText }>Change Password</Text>
+              <Text style={ styles.buttonArrow }></Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={ styles.button }
+              onPress={logout}
+            >
+              <Text style={ styles.buttonText }>Change Email</Text>
+              <Text style={ styles.buttonArrow }></Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={ styles.button }
+              onPress={logout}
+            >
+              <Text style={ styles.buttonText }>Change Username</Text>
+              <Text style={ styles.buttonArrow }></Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={ styles.logoutButton }
+            onPress={logout}
+          >
+              <Text style={ styles.buttonText }>Log Out</Text>
+          </TouchableOpacity>
       </View>
     </View>
   );
@@ -406,34 +333,4 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     padding: 12,
   },
-  inputHeader: {
-    fontSize: 20,
-    marginTop: 15,
-    marginBottom: 10,
-    color: '#67beff'
-  },
-  textInput: {
-    color: '#67beff',
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#67beff',
-    width: '100%',
-    borderRadius: 10,
-    fontSize: 15,
-    padding: 10,
-    marginBottom: 10
-  },
-  inputText: {
-    fontSize: 15,
-    color: '#67beff'
-  },
-  buttonCancel: {
-    flexDirection: 'row',
-    backgroundColor: '#989e99',
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#989e99',
-    borderRadius: 10,
-    padding: 12,
-  }
 });

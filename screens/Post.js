@@ -112,6 +112,12 @@ export function PostScreen() {
             <Text style={styles.buttonText}>Post</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.cornerButton}
+          onPress={() => navigation.navigate("MyPosts")}
+          >
+          <Text style={styles.buttonText}>My Posts</Text>
+          </TouchableOpacity>
+
         </View>
       </View>
     </View>
@@ -165,5 +171,15 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 15,
     color: '#fff'
+  },
+
+  cornerButton:{
+    position: "absolute",
+    right: 20,
+    bottom: 20,
+    backgroundColor: "#67beff",
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
 });

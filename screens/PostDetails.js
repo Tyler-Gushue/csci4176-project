@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, StyleSheet, TouchableOpacity, TextInput, Image} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { applyToPost, acceptParticipant, declineParticipant, fetchPostById } from "../DbUtil";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -58,7 +58,7 @@ export function PostDetailsScreen({route}){
 
     return(
         <View style={styles.container}>
-            <View style={styles.card}>
+            <ScrollView style={styles.card}>
                 <TouchableOpacity style={styles.button} 
                 onPress={() => navigation.goBack()}>
                     <Text style={styles.buttonText}>Back</Text>
@@ -129,7 +129,7 @@ export function PostDetailsScreen({route}){
                         ))}
                     </>
                 )}
-            </View>
+            </ScrollView>
         </View>
     );
 }
@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         padding: 20,
         borderRadius: 10,
+        margin: 10,
     },
 
     title:{
