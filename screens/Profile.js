@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useNavigation } from "@react-navigation/native";
-import { View, StyleSheet, Text, Button, TextInput, Image, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, Text, Button, Image, TouchableOpacity, Platform } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -14,9 +14,9 @@ import { fetchUserProfile } from '../DbUtil';
 
 export function ProfileScreen() {
   const [image, setImage] = useState(require('../Images/NoProfileImg.webp'));
-  const [showButtons, setShowButtons] = useState(true);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showChangeUsername, setShowChangeUsername] = useState(false);
+<<<<<<< HEAD
   const [showDeleteAccount, setDeleteAccount] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,12 +25,19 @@ export function ProfileScreen() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{6,}$/;
+=======
+  const [showChangeEmail, setShowChangeEmail] = useState(false);
+>>>>>>> dax
 
   const navigation = useNavigation();
   let cameraRef = useRef();
 
+<<<<<<< HEAD
   const [userId, setUserId] = useState("");
 
+=======
+  // Fetch the user's profile information
+>>>>>>> dax
   const [profileData, setProfileData] = useState(null);
 
   const getUserId = async () => {
@@ -126,7 +133,7 @@ export function ProfileScreen() {
   const uploadToCloudinary = async (uri) => {
 
     const cloudName = 'dliyhndog';
-    const uploadPreset = 'csci4177-project';
+    const uploadPreset = 'csci4177-project'; // The name you chose in Step 1
     const apiUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     try {
@@ -177,19 +184,6 @@ export function ProfileScreen() {
 
     }
   };
-
-  const logoutPrompt = () => {
-
-    Alert.alert(
-      "Log out",
-      "Are you sure you want to logout?",
-      [
-        { text: "Confirm", onPress: logout},
-        { text: "Cancel", onPress: () => console.log("Canceled")}
-      ]
-    )
-
-  }
 
   const logout = async () => {
 
@@ -351,7 +345,7 @@ export function ProfileScreen() {
     fetchUserProfile().then((data) => {
       setProfileData(data);
     });
-  }, [image]);
+  }, []);
 
   useEffect( () => {
 

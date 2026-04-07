@@ -1,8 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, StyleSheet, FlatList, Platform, TouchableOpacity} from "react-native";
 import React, {useState, useEffect} from "react"
-import { fetchPosts } from '../DbUtil.js'
-import { fetchUserFromId } from "../DbUtil.js";
+import { fetchPosts, fetchUserFromId } from '../DbUtil.js'
+
 
 
 //card to display post in feed
@@ -31,6 +31,7 @@ function PostCard({ post, navigation }) {
         <Text style={styles.gameEntry}>{ post.game }</Text>
       </View>
     </TouchableOpacity>
+    
   );
 }
 
@@ -53,11 +54,20 @@ export function HomeScreen() {
   }
 
   return (
-    <FlatList
-      data={posts}
-      renderItem={({ item }) => <PostCard post={item} navigation={navigation} />}
-      style={topPaddingStyle}
-    />
+    <View style={{flex: 1}}>
+      <FlatList
+        data={posts}
+        renderItem={({item}) => <PostCard post={item} navigation={navigation}/>}
+        style={topPaddingStyle}
+      />
+
+      <TouchableOpacity
+        style={styles.cornerButton}
+        onPress={() => navigation.navigate("ConfirmedPosts")}
+      >
+        <Text style={styles.buttonText}>Confirmed Posts</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -90,5 +100,21 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: 'gray',
     textAlign: 'center'
-  }
+  },
+
+  cornerButton:{
+    position: "absolute",
+    right: 20,
+    bottom: 20,
+    backgroundColor: "#67beff",
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    zIndex: 10,
+  },
+
+  buttonText:{
+    fontSize: 15,
+    color: "#fff",
+  },
 });
