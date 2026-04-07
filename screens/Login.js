@@ -1,9 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
 import { useNavigation } from "@react-navigation/native";
-import {signInWithEmailAndPassword } from "firebase/auth";
+import {signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { fetchUserFromId } from '../DbUtil';
+import { Alert } from 'react-native';
 
 
 export function Login() {
@@ -16,9 +18,30 @@ export function Login() {
 
   // Check if the user is already logged in and redirect if true
   useEffect(() => {
-    const check = auth.onAuthStateChanged((user) => {
+    const check = auth.onAuthStateChanged(async (user) => {
       if(user != null){
-        navigation.navigate('Home');
+        
+        const userData = await fetchUserFromId(user.uid);
+        
+        if (userData.is_deleted) {
+
+          await signOut(auth);
+          setError("This account has been deleted.");
+          Alert.alert(
+            "User Deleted",
+            "Unable to sign in.",
+            [
+              { text: "Confirm", onPress: () => console.log("Confirmed")}
+            ]
+          )
+      
+
+        } else {
+
+          navigation.navigate("Home");
+
+        }
+
       }
     });
     return check;
@@ -42,6 +65,20 @@ export function Login() {
 
           const userCredential = await signInWithEmailAndPassword(auth, email, password); // attemps to log in user
           const user = userCredential.user; // gets user's credentials
+
+          const userData = await fetchUserFromId(user.uid);
+
+          if (userData) {
+
+            if (userData.is_deleted) {
+
+              await signOut(auth);
+              setError("User is deleted");
+              return;
+
+            }
+
+          }
 
           await AsyncStorage.setItem('userID', user.uid); // saves user ID for session persistance
           navigation.navigate('Home'); // navigates to the home page

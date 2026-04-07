@@ -55,15 +55,6 @@ export function NavBar() {
           )
         }}
       />
-      <Tab.Screen
-        name="Friends"
-        component={FriendsScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account-group" size={size} color={color} />
-          )
-        }}
-      />
 
       <Tab.Screen
         name="Profile"

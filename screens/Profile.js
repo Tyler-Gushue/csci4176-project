@@ -5,10 +5,10 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Alert } from 'react-native';
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getAuth, signOut } from "firebase/auth";
-
+import { getAuth, signOut, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+import { db, auth } from "./firebaseConfig";
 import { fetchUserProfile } from '../DbUtil';
 
 
@@ -17,11 +17,33 @@ export function ProfileScreen() {
   const [showButtons, setShowButtons] = useState(true);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showChangeUsername, setShowChangeUsername] = useState(false);
+  const [showDeleteAccount, setDeleteAccount] = useState(false);
+  const [error, setError] = useState("");
+
+  const [newUsername, setNewUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{6,}$/;
 
   const navigation = useNavigation();
   let cameraRef = useRef();
 
+  const [userId, setUserId] = useState("");
+
   const [profileData, setProfileData] = useState(null);
+
+  const getUserId = async () => {
+
+    const id = await AsyncStorage.getItem('userID');
+
+    if (id) {
+
+      setUserId(id);
+
+    }
+
+  }
 
   /**
    * Prompts user with options when changing profile photo
@@ -130,10 +152,7 @@ export function ProfileScreen() {
       
       if (result.secure_url) {
         const imageUrl = result.secure_url;
-        console.log("Cloudinary URL:", imageUrl);
 
-        const userId = await AsyncStorage.getItem('userID');
-        const db = getFirestore();
         const userDocRef = doc(db, "users", userId);
         
         await updateDoc(userDocRef, {
@@ -194,6 +213,134 @@ export function ProfileScreen() {
 
   };
 
+  const deleteConfirmation = () => {
+
+    Alert.alert(
+      "Account Deletion",
+      "You will lose all data connected to this account.  Do you wish to continue with the deletion?",
+      [
+        { text: "Confirm", onPress: handleDelete},
+        { text: "Cancel", onPress: () => console.log("Canceled")}
+      ]
+    )
+
+  }
+
+  const handleDelete = async () => {
+
+    const user = auth.currentUser;
+
+    try {
+
+      const credential = EmailAuthProvider.credential(user.email, password);
+      await reauthenticateWithCredential(user, credential);
+      
+      await updateDoc(doc(db, "users", userId), {
+        is_deleted: true
+      });
+
+      await logout();
+
+
+    } catch (error) {
+
+      console.error("Delete failed:", error);
+      Alert.alert("Error", "Could not deactivate account.");
+
+    }
+
+  };
+
+  const handleUpdateUsername = async () => {
+
+    if (newUsername.trim() === "") {
+
+      Alert.alert("Error", "Username can't be emty");
+      return;
+
+    }
+
+    try {
+
+      await updateDoc(doc(db, "users", userId), {
+        username: newUsername
+      });
+
+      Alert.alert("Update Successful!", "Your username has been changed.")
+
+      setShowChangeUsername(false);
+      setShowButtons(true);
+
+      fetchUserProfile().then((data) => {
+        setProfileData(data);
+      });
+
+
+    } catch (error) {
+
+      console.error("Error updating username: ", error);
+      Alert.alert("Update Failed", "An error occured when updating username.")
+
+    }
+
+  }
+
+  const handleUpdatePassword = async () => {
+
+    const user = auth.currentUser;
+
+    try {
+
+      if (!password || !newPassword || !confirmPassword) {
+        setError("All fields must be set")
+        return;
+      }
+
+      if (!passwordRegex.test(password)) {
+
+        setError("Password must have ONE number , ONE uppercase & lower letter, and ONE special character.")
+        return;
+
+      }
+
+      if (newPassword != confirmPassword) {
+
+        setError("Passwords must match")
+        return;
+
+      }
+
+      const credential = EmailAuthProvider.credential(user.email, password);
+      await reauthenticateWithCredential(user, credential);
+
+      await updatePassword(user, newPassword);
+
+      Alert.alert("Update Successful!", "Your username has been changed.");
+
+      setShowChangePassword(false);
+      setShowButtons(true);
+      setPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+
+    } catch (error) {
+
+      console.error(error);
+
+      if (error.code === 'auth/wrong-password') {
+
+        Alert.alert("Error", "The password you entered is incorrect.");
+
+      } else {
+
+        Alert.alert("Error", "An error occured when updating password");
+
+      }
+
+      }
+
+  }
+
   useEffect(() => {
     if (image.uri) {
       uploadToCloudinary(image.uri);
@@ -206,6 +353,12 @@ export function ProfileScreen() {
     });
   }, [image]);
 
+  useEffect( () => {
+
+    getUserId();
+
+  }, [])
+
   return (
     <View style={ styles.container }>
       <View style={ styles.cardView }>
@@ -216,7 +369,7 @@ export function ProfileScreen() {
           >
             <Image
               style={ styles.profileImage }
-              source={(profileData != null) ? { uri: profileData.pfp } : image}
+              source={(profileData != null && profileData.pfp != null) ? { uri: profileData.pfp } : image}
             />
             <View style={ styles.editIconContainer }>
               <MaterialCommunityIcons name="pencil" size={18} color="#67beff" />
@@ -228,6 +381,7 @@ export function ProfileScreen() {
           {showButtons && (
             <>
               <View style={ styles.settings}>
+                <Text style={styles.inputHeader }>Settings</Text>
                 <TouchableOpacity
                   style={ styles.button }
                   onPress={ () => {
@@ -248,13 +402,24 @@ export function ProfileScreen() {
                   <Text style={ styles.buttonText }>Change Password</Text>
                   <Text style={ styles.buttonArrow }>&gt;</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                  style={ styles.button }
+                  onPress={logoutPrompt}
+                >
+                    <Text style={ styles.buttonText }>Log Out</Text>
+                    <Text style={ styles.buttonArrow }>&gt;</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={ styles.buttonDelete }
+                  onPress={ () => {
+                    setDeleteAccount(true);
+                    setShowButtons(false);
+                  }}
+                >
+                  <Text style={ styles.buttonText }>Delete Profile</Text>
+                  <Text style={ styles.buttonArrow }>&gt;</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={ styles.logoutButton }
-                onPress={logoutPrompt}
-              >
-                  <Text style={ styles.buttonText }>Log Out</Text>
-              </TouchableOpacity>
             </>
           )}
           {showChangePassword && (
@@ -263,17 +428,27 @@ export function ProfileScreen() {
                 <TextInput
                   style={[ styles.textInput, styles.inputText ]}
                   placeholder="Current Password"
+                  secureTextEntry={true}
+                  value={password}
+                  onChangeText={setPassword}
                 />
                 <TextInput
                   style={[ styles.textInput, styles.inputText ]}
                   placeholder="New Password"
+                  secureTextEntry={true}
+                  value={newPassword}
+                  onChangeText={setNewPassword}
                 />
                 <TextInput
                   style={[ styles.textInput, styles.inputText ]}
                   placeholder="Confirm Password"
+                  secureTextEntry={true}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
                 />
                 <TouchableOpacity
                   style={styles.button}
+                  onPress={handleUpdatePassword}
                 >
                   <Text style={styles.buttonText}>Update</Text>
                 </TouchableOpacity>
@@ -282,6 +457,9 @@ export function ProfileScreen() {
                   onPress={ () => {
                     setShowChangePassword(false);
                     setShowButtons(true);
+                    setPassword("");
+                    setNewPassword("");
+                    setConfirmPassword("");
                   }}
                 >
                   <Text style={styles.buttonText}>Cancel</Text>
@@ -294,13 +472,12 @@ export function ProfileScreen() {
                 <TextInput
                   style={[ styles.textInput, styles.inputText ]}
                   placeholder="New Username"
-                />
-                <TextInput
-                  style={[ styles.textInput, styles.inputText ]}
-                  placeholder="Password"
+                  value={newUsername}
+                  onChangeText={setNewUsername}
                 />
                 <TouchableOpacity
                   style={styles.button}
+                  onPress={handleUpdateUsername}
                 >
                 <Text style={styles.buttonText}>Update</Text>
                 </TouchableOpacity>
@@ -309,6 +486,36 @@ export function ProfileScreen() {
                   onPress={ () => {
                     setShowChangeUsername(false);
                     setShowButtons(true);
+                    setNewUsername("");
+                    setPassword("");
+                  }}
+                >
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+            </View>
+          )}
+          {showDeleteAccount && (
+            <View style={ styles.settings}>
+                <Text style={styles.inputHeader }>Delete Account</Text>
+                <TextInput
+                  style={[ styles.textInput, styles.inputText ]}
+                  placeholder="Current Password"
+                  secureTextEntry={true}
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <TouchableOpacity
+                  style={styles.buttonDelete}
+                  onPress={deleteConfirmation}
+                >
+                  <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.buttonCancel}
+                  onPress={ () => {
+                    setDeleteAccount(false);
+                    setShowButtons(true);
+                    setPassword("");
                   }}
                 >
                   <Text style={styles.buttonText}>Cancel</Text>
@@ -433,6 +640,15 @@ const styles = StyleSheet.create({
     width: '100%',
     borderWidth: 1,
     borderColor: '#989e99',
+    borderRadius: 10,
+    padding: 12,
+  },
+  buttonDelete: {
+    flexDirection: 'row',
+    backgroundColor: '#ff1e05',
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ff1e05',
     borderRadius: 10,
     padding: 12,
   }
