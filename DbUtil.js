@@ -9,22 +9,25 @@ const DB_USERS_NAME = "users"
 const DB_EVENTS_NAME = "events";
 
 export async function fetchPosts() {
-  const q = query(collection(db, DB_POSTS_NAME));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((docSnap) => ({
-    id: docSnap.id,
-    ...docSnap.data(),
-  }));
+    const q = query(collection(db, DB_POSTS_NAME));
+    const snapshot = await getDocs(q);
+
+    const posts = snapshot.docs.filter((post) => !post.data().isDeleted);
+
+    return posts.map((docSnap) => ({
+        id: docSnap.id,
+        ...docSnap.data(),
+    }));
 }
 
 /**
  * Creates a new post
- * @param {title of post} title 
- * @param {description of post} description 
- * @param {type of post competitive/casual} type 
- * @param {location of post online/in-person} location 
- * @param {game of the post} game 
- * @returns 
+ * @param {title of post} title
+ * @param {description of post} description
+ * @param {type of post competitive/casual} type
+ * @param {location of post online/in-person} location
+ * @param {game of the post} game
+ * @returns
  */
 export async function addPost(title, description, type, location, game, lat, long) {
 
@@ -68,6 +71,31 @@ export async function applyToPost(postId, message){
   return application;
 }
 
+export async function deletePost(postId) {
+
+    const userId = await AsyncStorage.getItem('userID');
+    if (!userId) {
+      return;
+    }
+
+    const q = doc(db, DB_POSTS_NAME, postId);
+
+    const post = (await getDoc(q)).data();
+
+    if (!post) {
+        throw new Error("Invalid post id");
+    }
+
+    if (post['ownerID'] !== userId) {
+        throw new Error("Insufficient permissions");
+    }
+
+    return await updateDoc(q, {
+        isDeleted: true
+    });
+}
+
+
 export async function acceptParticipant(postId, application){
     const postRef = doc(db, DB_POSTS_NAME, postId);
     const postSnap = await getDoc(postRef);
@@ -102,23 +130,28 @@ export async function fetchEvents() {
 }
 
 export async function fetchPostById(postId){
-  const postRef = doc(db, DB_POSTS_NAME, postId);
-  const postSnap = await getDoc(postRef);
+    const postRef = doc(db, DB_POSTS_NAME, postId);
+    const postSnap = await getDoc(postRef);
 
-  if(!postSnap.exists()){
-    return null;
-  }
 
-  return{
-    id:postSnap.id,
-    ...postSnap.data(),
-  };
+    if (!postSnap.exists()) {
+        return null;
+    }
+
+    if (!postSnap.isDeleted) {
+        return null;
+    }
+
+    return{
+        id:postSnap.id,
+        ...postSnap.data(),
+    };
 }
 
 /**
  * function for adding an event
- * @param {event being added} event 
- * @returns 
+ * @param {event being added} event
+ * @returns
  */
 export async function addEvent(event){
   return addDoc(collection(db, DB_EVENTS_NAME), {
@@ -161,9 +194,9 @@ export const getAddressFromCoords = async (lat, long) => {
 
     if (reverseGeocode.length > 0) {
       const address = reverseGeocode[0];
-      
+
       const name = address.name || address.street;
-      
+
       return name;
     }
     return "Location found, but address unavailable";

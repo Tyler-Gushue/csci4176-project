@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { applyToPost, acceptParticipant, declineParticipant, fetchPostById, getAddressFromCoords } from "../DbUtil";
+import { applyToPost, deletePost, acceptParticipant, declineParticipant, fetchPostById, getAddressFromCoords } from "../DbUtil";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MapView, {Marker} from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
+import { Alert } from 'react-native';
+
 
 export function PostDetailsScreen({route}){
     const navigation = useNavigation();
@@ -14,6 +16,8 @@ export function PostDetailsScreen({route}){
     const [acceptedApplications, setAcceptedApplications] = useState(post.acceptedParticipants || []);
     const [currentUserId, setCurrentUserId] = useState(null);
     const [addressName, setAddressName] = useState("");
+
+    const isOwner = () => currentUserId === postData.ownerID;
 
     const doApply = async () => {
         const newApplication = await applyToPost(post.id, message);
@@ -59,6 +63,7 @@ export function PostDetailsScreen({route}){
         loadUserId();
     }, []);
 
+
     useEffect(() => {
         const loadPost = async () => {
             const freshPost = await fetchPostById(post.id);
@@ -77,12 +82,36 @@ export function PostDetailsScreen({route}){
 
     }, [postData.location, postData.long, postData.lat])
 
-    const isOwner = currentUserId === postData.ownerID;
+    const removePost = async () => {
+        console.log('deleting post')
+
+
+        Alert.alert(
+          "Delete post",
+          "Are you sure you want to delete this post?",
+          [
+              {
+                text: "Delete Post", onPress: () => {
+                    try {
+                        deletePost(post.id);
+                        navigation.navigate("Home");
+                    }
+                    catch (err) {
+                        console.error(err);
+                    }
+                }
+
+              },
+            { text: "Cancel", onPress: () => {}}
+          ]
+        )
+
+    }
 
     return(
         <View style={styles.container}>
             <ScrollView style={styles.card}>
-                <TouchableOpacity style={styles.button} 
+                <TouchableOpacity style={styles.button}
                 onPress={() => navigation.goBack()}>
                     <Text style={styles.buttonText}>Back</Text>
                 </TouchableOpacity>
@@ -94,8 +123,8 @@ export function PostDetailsScreen({route}){
 
                 { postData.location === "In-person" && postData.lat && postData.long && (
                     <View style={styles.mapContainer}>
-                        <MapView 
-                            style={styles.map} 
+                        <MapView
+                            style={styles.map}
                             initialRegion={{
                                 latitude: postData.lat,
                                 longitude: postData.long,
@@ -103,7 +132,7 @@ export function PostDetailsScreen({route}){
                                 longitudeDelta: 0.01,
                             }}
                         >
-                            <Marker 
+                            <Marker
                             coordinate={{
                                 latitude: postData.lat,
                                 longitude: postData.long,
@@ -116,8 +145,9 @@ export function PostDetailsScreen({route}){
                     </View>
                 )}
 
-                <TextInput style={styles.input} 
-                placeholder="Why do you want to apply?" 
+
+                <TextInput style={styles.input}
+                placeholder="Why do you want to apply?"
                 placeholderTextColor="#67beff"
                 value={message}
                 onChangeText={setMessage}
@@ -127,6 +157,15 @@ export function PostDetailsScreen({route}){
                 onPress={doApply}>
                     <Text style={styles.buttonText}>Apply</Text>
                 </TouchableOpacity>
+
+                {
+                    isOwner() &&
+                    <TouchableOpacity style={styles.deleteButton}
+                        onPress={removePost}>
+                        <Text style={styles.buttonText}>Delete Post</Text>
+
+                    </TouchableOpacity>
+                }
 
                 {applications.length > 0 && (
                     <>
@@ -139,7 +178,7 @@ export function PostDetailsScreen({route}){
                             <Text style={styles.text}>User: {app.username || app.userId}</Text>
                             <Text style={styles.text}>Message: {app.message || "No message written"}</Text>
 
-                        {isOwner && (
+                        {isOwner() && (
                              <View style={styles.actionRow}>
                                 <TouchableOpacity style={styles.smallButton}
                                     onPress={() => doAccept(app)}
@@ -216,6 +255,14 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         padding: 8,
     },
+    deleteButton:{
+        backgroundColor: "#a71717",
+        alignItems: "center",
+        borderRadius: 10,
+        marginBottom: 15,
+        padding: 8,
+    },
+
 
     buttonText: {
         fontSize: 15,
