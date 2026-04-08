@@ -1,9 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import * as Location from 'expo-location';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView, {Marker} from "react-native-maps";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
-import React, {useState} from 'react';
 import { View, StyleSheet, Text, FlatList, TextInput, TouchableOpacity, Platform } from 'react-native';
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -26,11 +24,6 @@ export function PostScreen() {
   const [gameSuggestions, setGameSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const gameTestData = ["Minecraft", "Halo 3", "CoD 4: Modern Warfare"
-    , "CoD 4: Modern Warfare"
-    , "CoD 4: Modern Warfare"
-    , "CoD 4: Modern Warfare"
-  ];
 
   //send to firebase
   const submit = async () => {
@@ -192,8 +185,8 @@ export function PostScreen() {
 
           { locationType === "In-person" && coords ? (
             <View style={styles.mapContainer}>
-              <MapView 
-                style={styles.map} 
+              <MapView
+                style={styles.map}
                 initialRegion={{
                   latitude: coords.latitude,
                   longitude: coords.longitude,
@@ -209,8 +202,8 @@ export function PostScreen() {
                   }
                 }
               >
-                <Marker 
-                  coordinate={coords} 
+                <Marker
+                  coordinate={coords}
                   title="Meeting Spot"
                   description="Tap elsewhere to move"
                   pinColor='#67beff'
