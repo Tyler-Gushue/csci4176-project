@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import * as Location from 'expo-location';
 import React, { useState, useEffect } from 'react';
 import MapView, {Marker} from "react-native-maps";
-import { View, StyleSheet, Text, FlatList, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, Text, FlatList, TextInput, TouchableOpacity, ScrollView,  Platform } from 'react-native';
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
 import { steamSearch } from '../SteamAPI';
