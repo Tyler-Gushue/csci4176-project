@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { useNavigation } from "@react-navigation/native";
-import { View, StyleSheet, Text, Button, Image, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, Text, Button, Image, TouchableOpacity, Platform, TextInput } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -178,6 +178,17 @@ export function ProfileScreen() {
     }
   };
 
+  const logoutPrompt = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to log out?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", onPress: logout},
+      ]
+    );
+  };
+
   const logout = async () => {
 
     try {
@@ -297,7 +308,7 @@ export function ProfileScreen() {
 
       }
 
-      const credential = EmailAuthProvider.credential(user.email, password);
+  const credential = EmailAuthProvider.credential(user.email, password);
       await reauthenticateWithCredential(user, credential);
 
       await updatePassword(user, newPassword);
