@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import * as Location from 'expo-location';
 import { useState, useEffect } from 'react';
 import MapView, {Marker} from "react-native-maps";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
 
@@ -67,7 +67,10 @@ export function PostScreen() {
 
   return (
     <View style={ styles.container }>
-      <View style={ styles.cardView }>
+      <ScrollView 
+        style={styles.scrollViewBase} 
+        contentContainerStyle={styles.cardView}
+      >
         <Text style={styles.title}>Make a Post</Text>
         <View style={styles.form}>
 
@@ -178,7 +181,7 @@ export function PostScreen() {
           </TouchableOpacity>
 
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -188,14 +191,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#b4dafb',
   },
-  cardView: {
+  scrollViewBase: {
     flex: 1,
+    margin: 10,
+    marginTop: (Platform.OS != 'web') ? '15%' : 0,
+  },
+  cardView: {
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 20,
     margin: 10,
     marginTop: (Platform.OS != 'web') ? '15%' : 0,
     borderRadius: 10,
+    flexGrow: 1,
   },
   title: {
     fontSize: 40,
@@ -245,7 +253,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
+    height: 250,
     width: '100%',
-    height: '100%',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#67beff',
+    marginBottom: 15
   },
 });
