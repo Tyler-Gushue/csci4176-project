@@ -1,10 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
 import * as Location from 'expo-location';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import MapView, {Marker} from "react-native-maps";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
+import { View, StyleSheet, Text, FlatList, TextInput, TouchableOpacity, Platform } from 'react-native';
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
+import { steamSearch } from '../SteamAPI';
 
 //screen to create new post
 export function PostScreen() {
@@ -17,6 +18,12 @@ export function PostScreen() {
   const [locationType, setLocationType] = useState("");
   const [location, setLocation] = useState("");
   const [coords, setCoords] = useState(null);
+
+  let timeout = null;
+
+  const [gameSuggestions, setGameSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
 
   //send to firebase
   const submit = async () => {
@@ -32,6 +39,22 @@ export function PostScreen() {
     }
 
   };
+
+  const searchForGame = async (value) => {
+    if (value.length > 2) {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => {
+        steamSearch(value).then((games) => {
+          setGameSuggestions(games);
+          setShowSuggestions(true);
+        });
+      }, 400);
+    }
+
+    setGame(value);
+  }
 
   //check for empty inputs
   const validateForm = () => {
@@ -64,6 +87,15 @@ export function PostScreen() {
       setCoords(locationResult.coords);
     })();
   }, []);
+  function Suggestion({name, onClick}) {
+    return (
+      <View style={{padding: 10, borderColor: '#67beff', borderWidth: 1, borderRadius: 5}}>
+        <Text onPress={() => { setGame(name); setShowSuggestions(false) }}>
+          {name}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={ styles.container }>
@@ -87,13 +119,29 @@ export function PostScreen() {
             onChangeText={ setDescription }
           />
 
-          <TextInput
-            style={styles.postInput}
-            placeholder="Game"
-            placeholderTextColor="#67beff"
-            value={ game }
-            onChangeText={ setGame }
-          />
+          <View style={{marginBottom: 10}}>
+            <TextInput
+              style={styles.gameInput}
+              placeholder="Game"
+              placeholderTextColor="#67beff"
+              value={game}
+              onChangeText={searchForGame}
+              onFocus={() => {
+                if (game && game.length > 2) {
+                  setShowSuggestions(true);
+                }
+              }}
+              onBlur={() => {
+              }}
+            />
+            {showSuggestions && <FlatList
+              data={gameSuggestions}
+              style={{
+                maxHeight: 200
+              }}
+              renderItem={({ item }) => <Suggestion name={ item } />}
+            />}
+          </View>
 
           <Dropdown
             style={styles.postInput}
@@ -137,8 +185,8 @@ export function PostScreen() {
 
           { locationType === "In-person" && coords ? (
             <View style={styles.mapContainer}>
-              <MapView 
-                style={styles.map} 
+              <MapView
+                style={styles.map}
                 initialRegion={{
                   latitude: coords.latitude,
                   longitude: coords.longitude,
@@ -154,8 +202,8 @@ export function PostScreen() {
                   }
                 }
               >
-                <Marker 
-                  coordinate={coords} 
+                <Marker
+                  coordinate={coords}
                   title="Meeting Spot"
                   description="Tap elsewhere to move"
                   pinColor='#67beff'
@@ -216,6 +264,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     padding: 10,
     marginBottom: 10
+  },
+  gameInput: {
+    borderWidth: 1,
+    width: '100%',
+    borderRadius: 10,
+    borderColor: '#67beff',
+    color: '#67beff',
+    fontSize: 15,
+    padding: 10
   },
   button: {
     backgroundColor: '#67beff',
