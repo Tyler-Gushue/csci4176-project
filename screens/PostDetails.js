@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { applyToPost, acceptParticipant, declineParticipant, fetchPostById } from "../DbUtil";
+import { applyToPost, acceptParticipant, declineParticipant, fetchPostById, getAddressFromCoords } from "../DbUtil";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapView, {Marker} from "react-native-maps";
 
 export function PostDetailsScreen({route}){
     const navigation = useNavigation();
-    const{post} = route.params;
+    const {post} = route.params;
     const [postData, setPostData] = useState(post);
     const [message, setMessage] = useState("");
     const [applications, setApplications] = useState(post.pendingParticipants || []);
     const [acceptedApplications, setAcceptedApplications] = useState(post.acceptedParticipants || []);
     const [currentUserId, setCurrentUserId] = useState(null);
+    const [addressName, setAddressName] = useState("");
+
     const doApply = async () => {
         const newApplication = await applyToPost(post.id, message);
 
@@ -30,6 +33,22 @@ export function PostDetailsScreen({route}){
     const doDecline = async (application) => {
         await declineParticipant(post.id, application);
         setApplications((prev) => prev.filter((app) => app !== application));
+    };
+
+    const getLocationName = async () => {
+
+        if (postData.location === "In-person" && postData.lat && postData.long) {
+
+            const name = await getAddressFromCoords(postData.lat, postData.long);
+
+            setAddressName(name);
+
+        } else {
+
+            return;
+
+        }
+
     };
 
     useEffect(() => {
@@ -52,7 +71,11 @@ export function PostDetailsScreen({route}){
         loadPost();
     }, [post.id]);
 
+    useEffect(() => {
 
+        getLocationName();
+
+    }, [postData.location, postData.long, postData.lat])
 
     const isOwner = currentUserId === postData.ownerID;
 
@@ -68,6 +91,30 @@ export function PostDetailsScreen({route}){
                 <Text style={styles.text}>Game: {postData.game}</Text>
                 <Text style={styles.text}>Type: {postData.type}</Text>
                 <Text style={styles.text}>Location: {postData.location}</Text>
+
+                { postData.location === "In-person" && postData.lat && postData.long && (
+                    <View style={styles.mapContainer}>
+                        <MapView 
+                            style={styles.map} 
+                            initialRegion={{
+                                latitude: postData.lat,
+                                longitude: postData.long,
+                                latitudeDelta: 0.01,
+                                longitudeDelta: 0.01,
+                            }}
+                        >
+                            <Marker 
+                            coordinate={{
+                                latitude: postData.lat,
+                                longitude: postData.long,
+                            }}
+                            title="Meeting Spot"
+                            description={addressName}
+                            pinColor='#67beff'
+                            />
+                        </MapView>
+                    </View>
+                )}
 
                 <TextInput style={styles.input} 
                 placeholder="Why do you want to apply?" 
@@ -214,5 +261,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 8,
         flex: 1,
+    },
+    mapContainer: {
+        flex: 1,
+    },
+    map: {
+        height: 250,
+        width: '100%',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#67beff',
+        marginBottom: 15
     },
 });

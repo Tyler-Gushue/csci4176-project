@@ -19,6 +19,7 @@ export function ProfileScreen() {
   const [showDeleteAccount, setDeleteAccount] = useState(false);
   const [error, setError] = useState("");
 
+  const [showButtons, setShowButtons] = useState(true);
   const [newUsername, setNewUsername] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");

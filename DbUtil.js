@@ -2,6 +2,7 @@
 import { db, auth } from './screens/firebaseConfig.js';
 import { doc, addDoc, getDoc, getDocs, query, collection, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Location from 'expo-location';
 
 const DB_POSTS_NAME = "posts"
 const DB_USERS_NAME = "users"
@@ -25,7 +26,7 @@ export async function fetchPosts() {
  * @param {game of the post} game 
  * @returns 
  */
-export async function addPost(title, description, type, location, game) {
+export async function addPost(title, description, type, location, game, lat, long) {
 
   const userID = await AsyncStorage.getItem('userID');
 
@@ -37,6 +38,8 @@ export async function addPost(title, description, type, location, game) {
     location: location,
     game: game,
     ownerID: userID,
+    lat: lat,
+    long: long,
     pendingParticipants: [],
     acceptedParticipants: []
   });
@@ -143,3 +146,30 @@ export async function fetchUserFromId(userId) {
   const q = query(doc(db, DB_USERS_NAME, userId));
   return (await getDoc(q)).data();
 }
+
+/*
+ * Map functions
+ */
+
+export const getAddressFromCoords = async (lat, long) => {
+
+  try {
+    const reverseGeocode = await Location.reverseGeocodeAsync({
+      latitude: lat,
+      longitude: long
+    });
+
+    if (reverseGeocode.length > 0) {
+      const address = reverseGeocode[0];
+      
+      const name = address.name || address.street;
+      
+      return name;
+    }
+    return "Location found, but address unavailable";
+  } catch (error) {
+    console.error("Geocoding Error:", error);
+    return "Error retrieving address";
+  }
+
+};

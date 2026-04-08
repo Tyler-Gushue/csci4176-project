@@ -1,5 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
-import React, {useState} from 'react';
+import * as Location from 'expo-location';
+import { useState, useEffect } from 'react';
+import MapView, {Marker} from "react-native-maps";
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, Platform } from 'react-native';
 import { addPost } from '../DbUtil.js';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -12,18 +14,33 @@ export function PostScreen() {
   const [description, setDescription] = useState("");
   const [game, setGame] = useState("");
   const [type, setType] = useState("");
+  const [locationType, setLocationType] = useState("");
   const [location, setLocation] = useState("");
+  const [coords, setCoords] = useState(null);
 
   //send to firebase
   const submit = async () => {
-    await addPost(name, description, type, location, game);
+
+    if (coords) {
+
+      await addPost(name, description, type, locationType, game, coords.latitude, coords.longitude);
+
+    } else {
+
+      await addPost(name, description, type, locationType, game, null, null);
+
+    }
+
   };
 
   //check for empty inputs
   const validateForm = () => {
+
     if(name.trim() === "" || description.trim() === ""){
       return;
     }
+
+
 
     submit().then(() => {
       navigation.navigate('Home');
@@ -31,9 +48,22 @@ export function PostScreen() {
       setDescription("")
       setGame("");
       setType("");
-      setLocation("");
+      setLocationType("");
     });
   };
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Permission to access location was denied');
+        return;
+      }
+
+      let locationResult = await Location.getCurrentPositionAsync({});
+      setCoords(locationResult.coords);
+    })();
+  }, []);
 
   return (
     <View style={ styles.container }>
@@ -99,11 +129,40 @@ export function PostScreen() {
             labelField="label"
             valueField="value"
             placeholder="Select Location"
-            value={location}
+            value={locationType}
             onChange={item => {
-              setLocation(item.value);
+              setLocationType(item.value);
             }}
           />
+
+          { locationType === "In-person" && coords ? (
+            <View style={styles.mapContainer}>
+              <MapView 
+                style={styles.map} 
+                initialRegion={{
+                  latitude: coords.latitude,
+                  longitude: coords.longitude,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                }}
+                onPress={
+                  (e) => {
+
+                    const clickedCoords = e.nativeEvent.coordinate;
+                    setCoords(clickedCoords);
+
+                  }
+                }
+              >
+                <Marker 
+                  coordinate={coords} 
+                  title="Meeting Spot"
+                  description="Tap elsewhere to move"
+                  pinColor='#67beff'
+                />
+              </MapView>
+            </View>
+          ) : null }
 
           <TouchableOpacity
             style={styles.button}
@@ -181,5 +240,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12,
+  },
+  mapContainer: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
   },
 });
