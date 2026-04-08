@@ -4,6 +4,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchPosts } from "../DbUtil";
 import { useNavigation } from "@react-navigation/native";
 
+/**
+ * Box design for a post
+ * @param {*} param0 
+ * @returns 
+ */
 function MyPostCard({post, navigation}){
     return (
         <TouchableOpacity style={styles.cardView}
@@ -22,6 +27,7 @@ export function MyPostsScreen() {
     const navigation = useNavigation();
     const [posts, setPosts] = useState([]);
 
+    // gets posts
     useEffect(() => {
         const loadMyPosts = async () => {
             const userId = await AsyncStorage.getItem("userID");

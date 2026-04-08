@@ -19,6 +19,9 @@ export function PostDetailsScreen({route}){
 
     const isOwner = () => currentUserId === postData.ownerID;
 
+    /**
+     * async function for applying to a post
+     */
     const doApply = async () => {
         const newApplication = await applyToPost(post.id, message);
 
@@ -28,17 +31,29 @@ export function PostDetailsScreen({route}){
         setMessage("");
     };
 
+    /**
+     * Accept a user applying
+     * @param {*} application 
+     */
     const doAccept = async (application) => {
         await acceptParticipant(post.id, application);
         setApplications((prev) => prev.filter((app) => app !== application));
         setAcceptedApplications((prev) => [...prev, application]);
     };
 
+    /**
+     * Decline a user applying
+     * @param {*} application 
+     */
     const doDecline = async (application) => {
         await declineParticipant(post.id, application);
         setApplications((prev) => prev.filter((app) => app !== application));
     };
 
+    /**
+     * Gets name of location based on coords
+     * @returns 
+     */
     const getLocationName = async () => {
 
         if (postData.location === "In-person" && postData.lat && postData.long) {
@@ -55,6 +70,7 @@ export function PostDetailsScreen({route}){
 
     };
 
+    // gets user id
     useEffect(() => {
         const loadUserId = async () => {
             const userId = await AsyncStorage.getItem("userID");
@@ -64,6 +80,7 @@ export function PostDetailsScreen({route}){
     }, []);
 
 
+    // loads post
     useEffect(() => {
         const loadPost = async () => {
             const freshPost = await fetchPostById(post.id);
@@ -76,12 +93,16 @@ export function PostDetailsScreen({route}){
         loadPost();
     }, [post.id]);
 
+    // gets location name
     useEffect(() => {
 
         getLocationName();
 
     }, [postData.location, postData.long, postData.lat])
 
+    /**
+     * Removes post
+     */
     const removePost = async () => {
         console.log('deleting post')
 

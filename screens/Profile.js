@@ -13,18 +13,26 @@ import { fetchUserProfile } from '../DbUtil';
 
 
 export function ProfileScreen() {
-  const [image, setImage] = useState(require('../Images/NoProfileImg.webp'));
+  const [image, setImage] = useState(require('../Images/NoProfileImg.webp')); // variable for image
+
+  // variable for showing different parts of settings
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [showChangeUsername, setShowChangeUsername] = useState(false);
   const [showDeleteAccount, setDeleteAccount] = useState(false);
-  const [error, setError] = useState("");
 
-  const [showButtons, setShowButtons] = useState(true);
-  const [newUsername, setNewUsername] = useState("");
+
+  const [error, setError] = useState(""); // error variable
+
+  const [showButtons, setShowButtons] = useState(true); // variable to show buttons
+
+  const [newUsername, setNewUsername] = useState(""); // variable for changing username
+
+  // variables for changing password
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{6,}$/;
+
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*]).{6,}$/; // regex for making passwrod
 
   const navigation = useNavigation();
   let cameraRef = useRef();
@@ -33,6 +41,9 @@ export function ProfileScreen() {
 
   const [profileData, setProfileData] = useState(null);
 
+  /**
+   * async function for getting userId
+   */
   const getUserId = async () => {
 
     const id = await AsyncStorage.getItem('userID');
@@ -123,10 +134,14 @@ export function ProfileScreen() {
       }
   };
 
+  /**
+   * Async function to save new pfp to Cloudinary and FireStore
+   * @param {image} uri 
+   */
   const uploadToCloudinary = async (uri) => {
 
     const cloudName = 'dliyhndog';
-    const uploadPreset = 'csci4177-project'; // The name you chose in Step 1
+    const uploadPreset = 'csci4177-project';
     const apiUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     try {
@@ -178,6 +193,9 @@ export function ProfileScreen() {
     }
   };
 
+  /**
+   * promp for logging out
+   */
   const logoutPrompt = () => {
     Alert.alert(
       "Logout",
@@ -189,6 +207,9 @@ export function ProfileScreen() {
     );
   };
 
+  /**
+   * async function for loggin out
+   */
   const logout = async () => {
 
     try {
@@ -211,6 +232,9 @@ export function ProfileScreen() {
 
   };
 
+  /**
+   * prompt for deletion confirmation
+   */
   const deleteConfirmation = () => {
 
     Alert.alert(
@@ -224,6 +248,9 @@ export function ProfileScreen() {
 
   }
 
+  /**
+   * async function for deleting user
+   */
   const handleDelete = async () => {
 
     const user = auth.currentUser;
@@ -249,6 +276,10 @@ export function ProfileScreen() {
 
   };
 
+  /**
+   * async function for updating username
+   * @returns 
+   */
   const handleUpdateUsername = async () => {
 
     if (newUsername.trim() === "") {
@@ -283,6 +314,10 @@ export function ProfileScreen() {
 
   }
 
+  /**
+   * async function for updating a password
+   * @returns 
+   */
   const handleUpdatePassword = async () => {
 
     const user = auth.currentUser;
@@ -308,7 +343,7 @@ export function ProfileScreen() {
 
       }
 
-  const credential = EmailAuthProvider.credential(user.email, password);
+    const credential = EmailAuthProvider.credential(user.email, password);
       await reauthenticateWithCredential(user, credential);
 
       await updatePassword(user, newPassword);
@@ -339,18 +374,21 @@ export function ProfileScreen() {
 
   }
 
+  // use effect for updating pfp
   useEffect(() => {
     if (image.uri) {
       uploadToCloudinary(image.uri);
     }
   }, [image]);
 
+  // use effect for when data changes it gets recalled
   useEffect(() => {
     fetchUserProfile().then((data) => {
       setProfileData(data);
     });
   }, []);
 
+  // use effect for getting user id
   useEffect( () => {
 
     getUserId();
