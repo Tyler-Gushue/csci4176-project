@@ -8,6 +8,9 @@ const DB_POSTS_NAME = "posts"
 const DB_USERS_NAME = "users"
 const DB_EVENTS_NAME = "events";
 
+/**
+ * Fetch a feed from the database (all posts)
+ */
 export async function fetchPosts() {
     const q = query(collection(db, DB_POSTS_NAME));
     const snapshot = await getDocs(q);
@@ -48,6 +51,12 @@ export async function addPost(title, description, type, location, game, lat, lon
   });
 }
 
+/**
+ * Apply to join a new post
+ * @param {*} postId
+ * @param {*} message
+ * @returns
+ */
 export async function applyToPost(postId, message){
   const userID = await AsyncStorage.getItem('userID');
   if(!userID){
@@ -71,6 +80,11 @@ export async function applyToPost(postId, message){
   return application;
 }
 
+/**
+ * Delete a post (sets it as deleted and will not be shown to the user)
+ * @param {*} postId
+ * @returns
+ */
 export async function deletePost(postId) {
 
     const userId = await AsyncStorage.getItem('userID');
@@ -78,24 +92,31 @@ export async function deletePost(postId) {
       return;
     }
 
+    // Query a user to make sure that the user deleting is the owner
     const q = doc(db, DB_POSTS_NAME, postId);
 
     const post = (await getDoc(q)).data();
 
+    // If there is no post that exists, return an error
     if (!post) {
         throw new Error("Invalid post id");
     }
 
+    // If the owner does not match
     if (post['ownerID'] !== userId) {
         throw new Error("Insufficient permissions");
     }
 
+    // Update the post
     return await updateDoc(q, {
         isDeleted: true
     });
 }
 
 
+/**
+ * Accepts a participant to join a post
+ */
 export async function acceptParticipant(postId, application){
     const postRef = doc(db, DB_POSTS_NAME, postId);
     const postSnap = await getDoc(postRef);
@@ -109,6 +130,11 @@ export async function acceptParticipant(postId, application){
     });
   }
 
+
+
+/**
+ * Declines a participant from a post
+ */
 export async function declineParticipant(postId, application){
     const postRef = doc(db, DB_POSTS_NAME, postId);
     const postSnap = await getDoc(postRef);
@@ -118,8 +144,12 @@ export async function declineParticipant(postId, application){
     await updateDoc(postRef, {
       pendingParticipants: updatePending,
     });
-  }
+}
 
+/**
+ * Fetch all events from the database
+ * (no longer used)
+ */
 export async function fetchEvents() {
   const q = query(collection(db, DB_EVENTS_NAME));
   const snapshot = await getDocs(q);
@@ -129,6 +159,9 @@ export async function fetchEvents() {
   }));
 }
 
+/**
+ * Fetches a post from the database given the id
+ */
 export async function fetchPostById(postId){
     const postRef = doc(db, DB_POSTS_NAME, postId);
     const postSnap = await getDoc(postRef);
@@ -149,7 +182,7 @@ export async function fetchPostById(postId){
 }
 
 /**
- * function for adding an event
+ * Add an event to the database
  * @param {event being added} event
  * @returns
  */
@@ -165,6 +198,10 @@ export async function addEvent(event){
  * User helpers
  */
 
+
+/**
+ * Fetch the profile of the logged in user
+ */
 export async function fetchUserProfile() {
   if (auth.currentUser == null) {
     return null;
@@ -175,6 +212,9 @@ export async function fetchUserProfile() {
 }
 
 
+/**
+ * Fetch the profile of a user given the id
+ */
 export async function fetchUserFromId(userId) {
   const q = query(doc(db, DB_USERS_NAME, userId));
   return (await getDoc(q)).data();
@@ -184,6 +224,10 @@ export async function fetchUserFromId(userId) {
  * Map functions
  */
 
+
+/**
+ * Get a geolocation address from latitude and longitude
+ */
 export const getAddressFromCoords = async (lat, long) => {
 
   try {

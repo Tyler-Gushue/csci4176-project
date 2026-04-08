@@ -25,7 +25,8 @@ export function PostScreen() {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
 
-  //send to firebase
+
+  // Submits a new post to the database
   const submit = async () => {
 
     if (coords) {
@@ -40,6 +41,7 @@ export function PostScreen() {
 
   };
 
+    /// Searches for game recommendations using the SteamAPI
   const searchForGame = async (value) => {
     if (value.length > 2) {
       if (timeout) {
@@ -76,7 +78,8 @@ export function PostScreen() {
   };
 
   useEffect(() => {
-    (async () => {
+      (async () => {
+        // Request permissions for locations
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         alert('Permission to access location was denied');
@@ -87,7 +90,10 @@ export function PostScreen() {
       setCoords(locationResult.coords);
     })();
   }, []);
-  function Suggestion({name, onClick}) {
+
+
+  /// Container for a game suggestion (more general than that, but only used for game suggestions so far)
+  function Suggestion({ name }) {
     return (
       <View style={{padding: 10, borderColor: '#67beff', borderWidth: 1, borderRadius: 5}}>
         <Text onPress={() => { setGame(name); setShowSuggestions(false) }}>
@@ -99,8 +105,8 @@ export function PostScreen() {
 
   return (
     <View style={ styles.container }>
-      <ScrollView 
-        style={styles.scrollViewBase} 
+      <ScrollView
+        style={styles.scrollViewBase}
         contentContainerStyle={styles.cardView}
       >
         <Text style={styles.title}>Make a Post</Text>

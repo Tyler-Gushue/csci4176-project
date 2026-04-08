@@ -9,6 +9,7 @@ import { fetchPosts, fetchUserFromId } from '../DbUtil.js'
 function PostCard({ post, navigation }) {
   const [username, setUsername] = useState("unknown");
 
+  // Fetch the username for the post
   useEffect(() => {
     fetchUserFromId(post.ownerID).then((data) => {
       if(data && data.username){
@@ -40,6 +41,7 @@ export function HomeScreen() {
   const navigation = useNavigation();
   const [posts, setPosts] = useState([]);
 
+  // Fetch the posts for the feed
   useEffect(() => {
     fetchPosts().then((data) => {
        setPosts(data.map((v) => v));
@@ -54,7 +56,9 @@ export function HomeScreen() {
   }
 
   return (
-    <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
+
+      {/* Display the user feed */}
       <FlatList
         data={posts}
         renderItem={({item}) => <PostCard post={item} navigation={navigation}/>}
