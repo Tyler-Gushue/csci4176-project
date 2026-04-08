@@ -8,7 +8,7 @@ import { fetchPosts, fetchUserFromId } from '../DbUtil.js'
 //card to display post in feed
 function PostCard({ post, navigation }) {
   const [username, setUsername] = useState("unknown");
-  
+
   useEffect(() => {
     fetchUserFromId(post.ownerID).then((data) => {
       if(data && data.username){
@@ -25,13 +25,13 @@ function PostCard({ post, navigation }) {
       <Text style={styles.username}>Posted by {username} on {  date.toDateString() }</Text>
       <Text style={styles.description}>{post.description}</Text>
 
-      <Text style={{ fontSize: 20, color: 'gray', paddingTop: 20, fontWeight: "500", flex: 0.3 }}>Games</Text>
+      <Text style={{ fontSize: 20, color: "#67beff", paddingTop: 20, fontWeight: "500", flex: 0.3 }}>Games</Text>
 
-      <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderColor: 'black', borderWidth: 2, borderRadius: 10, borderColor: 'lightgray'} }>
+      <View style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderWidth: 2, borderRadius: 10, borderColor: "#67beff", marginTop: 10} }>
         <Text style={styles.gameEntry}>{ post.game }</Text>
       </View>
     </TouchableOpacity>
-    
+
   );
 }
 
@@ -76,6 +76,8 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: 'white',
     margin: 7,
+    borderColor: "#67beff",
+    borderWidth: 2,
     borderRadius: 10
   },
   title: {
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
     color: 'gray'
   },
   description: {
-    paddingTop: 10,
+    paddingTop: 15,
     fontSize: 16,
     fontWeight: "500"
   },
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
     padding: 5,
     fontWeight: "600",
     textAlign: 'left',
-    color: 'gray',
+    color: 'black',
     textAlign: 'center'
   },
 
