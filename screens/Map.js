@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {View, Text, StyleSheet, TouchableOpacity, Platform} from "react-native";
 import MapView, {Marker} from "react-native-maps";
 import * as Location from "expo-location";
-import { fetchEvents } from "../DbUtil";
+import { fetchPosts } from "../DbUtil";
 
 // Screen to display events on a map
 export function MapScreen(){
@@ -35,12 +35,12 @@ export function MapScreen(){
                 });
             }
             // fetch events from firebase
-            const eventData = await fetchEvents();
-            setEvents(eventData.filter((event) => event.latitude != null && event.longitude != null)
-            .map((event) => ({
-                ...event,
-                latitude: Number(event.latitude),
-                longitude: Number(event.longitude),
+            const postData = await fetchPosts();
+            setEvents(postData.filter((post) => post.location === "In-person" && post.lat != null && post.long != null)
+            .map((post) => ({
+                ...post,
+                latitude: Number(post.lat),
+                longitude: Number(post.long),
             }))
         );
         }
@@ -80,11 +80,9 @@ export function MapScreen(){
                         <Text style={styles.eventTitle}>{selectedEvent.title}</Text>
                         <Text style={styles.eventText}>{selectedEvent.description}</Text>
                         <Text style={styles.eventText}>Game: {selectedEvent.game}</Text>
-                        <Text style={styles.eventText}>Date: {selectedEvent.date}</Text>
-                        <Text style={styles.eventText}>Time: {selectedEvent.time}</Text>
-                        <Text style={styles.eventText}>Location: {selectedEvent.locationName}</Text>
-                        <Text style={styles.eventText}>Host: {selectedEvent.host}</Text>
-                        <Text style={styles.eventText}>Skill Level: {selectedEvent.skillLevel}</Text>
+                        <Text style={styles.eventText}>Type: {selectedEvent.type}</Text>
+                        <Text style={styles.eventText}>Location: {selectedEvent.location}</Text>
+
                         <TouchableOpacity
                             style={ styles.button }
                             onPress={() => setSelectedEvent(null)}
